@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.template.feature.weighbridge.ui
+package android.template.feature.weighbridge.ui.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,9 +26,9 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import android.template.core.data.MyModelRepository
-import android.template.feature.weighbridge.ui.MyModelUiState.Error
-import android.template.feature.weighbridge.ui.MyModelUiState.Loading
-import android.template.feature.weighbridge.ui.MyModelUiState.Success
+import android.template.feature.weighbridge.ui.list.MyModelUiState.Error
+import android.template.feature.weighbridge.ui.list.MyModelUiState.Loading
+import android.template.feature.weighbridge.ui.list.MyModelUiState.Success
 import javax.inject.Inject
 
 @HiltViewModel

@@ -25,8 +25,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import android.template.core.data.MyModelRepository
-import android.template.feature.weighbridge.ui.MyModelUiState
-import android.template.feature.weighbridge.ui.MyModelViewModel
+import android.template.feature.weighbridge.ui.list.MyModelUiState
+import android.template.feature.weighbridge.ui.list.MyModelViewModel
 
 /**
  * Example local unit test, which will execute on the development machine (host).

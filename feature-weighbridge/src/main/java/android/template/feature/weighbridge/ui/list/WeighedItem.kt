@@ -1,6 +1,7 @@
-package android.template.feature.weighbridge.ui
+package android.template.feature.weighbridge.ui.list
 
 import android.template.core.ui.MyApplicationTheme
+import android.template.feature.weighbridge.ui.WeighedItemUI
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -98,7 +99,8 @@ fun LicenseTag(license: String) {
 @Composable
 fun WeighedItemPreview() {
     MyApplicationTheme {
-        WeighedItem(WeighedItemUI(
+        WeighedItem(
+            WeighedItemUI(
             id = 0,
             dateTime = "14 Jun 2024 13:35",
             license = "B 7772 DAB",
@@ -106,6 +108,7 @@ fun WeighedItemPreview() {
             inbound = "0,2",
             outbound = "0.45",
             netWeight = "0.25"
-        )) {}
+        )
+        ) {}
     }
 }

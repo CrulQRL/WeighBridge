@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.template.feature.weighbridge.ui
+package android.template.feature.weighbridge.ui.list
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -38,8 +38,8 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
-import android.template.feature.weighbridge.ui.MyModelUiState.Success
 import android.template.core.ui.MyApplicationTheme
+import android.template.feature.weighbridge.ui.WeighedItemUI
 import android.util.Log
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
@@ -47,9 +47,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
+import androidx.navigation.NavController
 
 @Composable
-fun WeighedItemListScreen(modifier: Modifier = Modifier, viewModel: MyModelViewModel = hiltViewModel()) {
+fun WeighedItemListScreen(
+    navController: NavController,
+    modifier: Modifier = Modifier,
+    viewModel: MyModelViewModel = hiltViewModel()
+)
+{
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val items by produceState<MyModelUiState>(
         initialValue = MyModelUiState.Loading,
@@ -60,13 +66,27 @@ fun WeighedItemListScreen(modifier: Modifier = Modifier, viewModel: MyModelViewM
             viewModel.uiState.collect { value = it }
         }
     }
-    if (items is Success) {
+
+    Scaffold(
+        floatingActionButton = {
+            CreateWeighedItemButton {
+                navController.navigate("create")
+            }
+        }
+    ) {
         WeighedItemListScreen(
-//            items = (items as Success).data,
             onSave = { name -> viewModel.addMyModel(name) },
-            modifier = modifier
+            modifier = modifier.padding(it)
         )
     }
+
+//    if (items is Success) {
+//        WeighedItemListScreen(
+//            items = (items as Success).data,
+//            onSave = { name -> viewModel.addMyModel(name) },
+//            modifier = modifier
+//        )
+//    }
 }
 
 
@@ -76,35 +96,27 @@ internal fun WeighedItemListScreen(
     modifier: Modifier = Modifier,
     listWeighedData: List<WeighedItemUI>? = null
 ) {
-    Scaffold(
-        floatingActionButton = {
-            CreateWeighedItemButton {
+    Column(modifier = modifier) {
+        var nameMyModel by remember { mutableStateOf("Compose") }
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
+            horizontalArrangement = Arrangement.spacedBy(16.dp)
+        ) {
+            TextField(
+                value = nameMyModel,
+                onValueChange = { nameMyModel = it }
+            )
 
+            Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameMyModel) }) {
+                Text("Save")
             }
         }
-    ) {
-        Column(modifier) {
-            var nameMyModel by remember { mutableStateOf("Compose") }
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 24.dp),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                TextField(
-                    value = nameMyModel,
-                    onValueChange = { nameMyModel = it }
-                )
 
-                Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameMyModel) }) {
-                    Text("Save")
-                }
-            }
-
-            listWeighedData?.forEach { data ->
-                WeighedItem(weighedItem = data) {
-                    Log.d("Lol", "Weighed data id: $it clicked")
-                }
+        listWeighedData?.forEach { data ->
+            WeighedItem(weighedItem = data) {
+                Log.d("Lol", "Weighed data id: $it clicked")
             }
         }
     }
