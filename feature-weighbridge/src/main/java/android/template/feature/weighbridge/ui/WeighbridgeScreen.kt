@@ -23,7 +23,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -41,6 +40,7 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
 import android.template.feature.weighbridge.ui.MyModelUiState.Success
 import android.template.core.ui.MyApplicationTheme
+import android.util.Log
 
 @Composable
 fun MyModelScreen(modifier: Modifier = Modifier, viewModel: MyModelViewModel = hiltViewModel()) {
@@ -56,24 +56,26 @@ fun MyModelScreen(modifier: Modifier = Modifier, viewModel: MyModelViewModel = h
     }
     if (items is Success) {
         MyModelScreen(
-            items = (items as Success).data,
+//            items = (items as Success).data,
             onSave = { name -> viewModel.addMyModel(name) },
             modifier = modifier
         )
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 internal fun MyModelScreen(
-    items: List<String>,
     onSave: (name: String) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    listWeighedData: List<WeighedItemUI>? = null
 ) {
     Column(modifier) {
         var nameMyModel by remember { mutableStateOf("Compose") }
         Row(
-            modifier = Modifier.fillMaxWidth().padding(bottom = 24.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(bottom = 24.dp),
             horizontalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             TextField(
@@ -85,8 +87,11 @@ internal fun MyModelScreen(
                 Text("Save")
             }
         }
-        items.forEach {
-            Text("Saved item: $it")
+
+        listWeighedData?.forEach { data ->
+            WeighedItem(weighedItem = data) {
+                Log.d("Lol", "Weighed data id: $it clicked")
+            }
         }
     }
 }
@@ -97,14 +102,45 @@ internal fun MyModelScreen(
 @Composable
 private fun DefaultPreview() {
     MyApplicationTheme {
-        MyModelScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
+        MyModelScreen(
+            onSave = {},
+            listWeighedData = listOf(
+                WeighedItemUI(
+                    id = 0,
+                    dateTime = "14 Jun 2024 13:35",
+                    license = "B 6572 CCA",
+                    driver = "Komang",
+                    inbound = "0,2",
+                    outbound = "0.45",
+                    netWeight = "0.25"
+                ),
+                WeighedItemUI(
+                    id = 1,
+                    dateTime = "15 Jun 2024 13:35",
+                    license = "B 7772 DAB",
+                    driver = "Budi",
+                    inbound = "0,2",
+                    outbound = "0.45",
+                    netWeight = "0.25"
+                ),
+                WeighedItemUI(
+                    id = 2,
+                    dateTime = "16 Jun 2024 13:35",
+                    license = "B 1318 OPE",
+                    driver = "Sudarso",
+                    inbound = "0,2",
+                    outbound = "0.45",
+                    netWeight = "0.25"
+                )
+            )
+        )
     }
 }
 
-@Preview(showBackground = true, widthDp = 480)
-@Composable
-private fun PortraitPreview() {
-    MyApplicationTheme {
-        MyModelScreen(listOf("Compose", "Room", "Kotlin"), onSave = {})
-    }
-}
+//@Preview(showBackground = true, widthDp = 480)
+//@Composable
+//private fun PortraitPreview() {
+//    MyApplicationTheme {
+//        MyModelScreen(onSave = {})
+//    }
+//}

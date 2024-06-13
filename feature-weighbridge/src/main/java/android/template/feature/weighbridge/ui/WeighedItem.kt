@@ -24,6 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -46,7 +47,8 @@ fun WeighedItem(weighedItem: WeighedItemUI, onClick: (id: Int) -> Unit) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
+            horizontalArrangement = Arrangement.SpaceBetween
         ) {
 
             Column(modifier = Modifier.align(Alignment.CenterVertically)) {
@@ -55,9 +57,11 @@ fun WeighedItem(weighedItem: WeighedItemUI, onClick: (id: Int) -> Unit) {
                     modifier = Modifier.padding(0.dp, 0.dp, 12.dp, 0.dp),
 //                    color = MaterialTheme.colors.surface,
                     fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
 //                    style = typography.subtitle1
                 )
-                Spacer(modifier = Modifier.height(8.dp))
+
+                Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
                     text = weighedItem.dateTime,
@@ -68,12 +72,7 @@ fun WeighedItem(weighedItem: WeighedItemUI, onClick: (id: Int) -> Unit) {
 
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.End
-            ) {
-                LicenseTag(weighedItem.license)
-            }
+            LicenseTag(weighedItem.license)
         }
     }
 }
