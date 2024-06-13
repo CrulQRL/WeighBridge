@@ -41,9 +41,15 @@ import androidx.lifecycle.repeatOnLifecycle
 import android.template.feature.weighbridge.ui.MyModelUiState.Success
 import android.template.core.ui.MyApplicationTheme
 import android.util.Log
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 
 @Composable
-fun MyModelScreen(modifier: Modifier = Modifier, viewModel: MyModelViewModel = hiltViewModel()) {
+fun WeighedItemListScreen(modifier: Modifier = Modifier, viewModel: MyModelViewModel = hiltViewModel()) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     val items by produceState<MyModelUiState>(
         initialValue = MyModelUiState.Loading,
@@ -55,7 +61,7 @@ fun MyModelScreen(modifier: Modifier = Modifier, viewModel: MyModelViewModel = h
         }
     }
     if (items is Success) {
-        MyModelScreen(
+        WeighedItemListScreen(
 //            items = (items as Success).data,
             onSave = { name -> viewModel.addMyModel(name) },
             modifier = modifier
@@ -65,34 +71,53 @@ fun MyModelScreen(modifier: Modifier = Modifier, viewModel: MyModelViewModel = h
 
 
 @Composable
-internal fun MyModelScreen(
+internal fun WeighedItemListScreen(
     onSave: (name: String) -> Unit,
     modifier: Modifier = Modifier,
     listWeighedData: List<WeighedItemUI>? = null
 ) {
-    Column(modifier) {
-        var nameMyModel by remember { mutableStateOf("Compose") }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            TextField(
-                value = nameMyModel,
-                onValueChange = { nameMyModel = it }
-            )
+    Scaffold(
+        floatingActionButton = {
+            CreateWeighedItemButton {
 
-            Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameMyModel) }) {
-                Text("Save")
             }
         }
+    ) {
+        Column(modifier) {
+            var nameMyModel by remember { mutableStateOf("Compose") }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 24.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                TextField(
+                    value = nameMyModel,
+                    onValueChange = { nameMyModel = it }
+                )
 
-        listWeighedData?.forEach { data ->
-            WeighedItem(weighedItem = data) {
-                Log.d("Lol", "Weighed data id: $it clicked")
+                Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameMyModel) }) {
+                    Text("Save")
+                }
+            }
+
+            listWeighedData?.forEach { data ->
+                WeighedItem(weighedItem = data) {
+                    Log.d("Lol", "Weighed data id: $it clicked")
+                }
             }
         }
+    }
+}
+
+@Composable
+internal fun CreateWeighedItemButton(onClick: () -> Unit) {
+    FloatingActionButton(
+        modifier = Modifier.padding(0.dp, 0.dp, 24.dp, 24.dp),
+        shape = CircleShape,
+        onClick = { onClick() },
+    ) {
+        Icon(Icons.Filled.Add, "Create WeighedItem button")
     }
 }
 
@@ -102,7 +127,7 @@ internal fun MyModelScreen(
 @Composable
 private fun DefaultPreview() {
     MyApplicationTheme {
-        MyModelScreen(
+        WeighedItemListScreen(
             onSave = {},
             listWeighedData = listOf(
                 WeighedItemUI(
