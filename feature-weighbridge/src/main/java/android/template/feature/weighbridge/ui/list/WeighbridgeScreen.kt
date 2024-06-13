@@ -16,15 +16,8 @@
 
 package android.template.feature.weighbridge.ui.list
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -48,6 +41,7 @@ import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 @Composable
 fun WeighedItemListScreen(
@@ -67,18 +61,7 @@ fun WeighedItemListScreen(
         }
     }
 
-    Scaffold(
-        floatingActionButton = {
-            CreateWeighedItemButton {
-                navController.navigate("create")
-            }
-        }
-    ) {
-        WeighedItemListScreen(
-            onSave = { name -> viewModel.addMyModel(name) },
-            modifier = modifier.padding(it)
-        )
-    }
+    WeighedItemListScreen(navController)
 
 //    if (items is Success) {
 //        WeighedItemListScreen(
@@ -92,32 +75,28 @@ fun WeighedItemListScreen(
 
 @Composable
 internal fun WeighedItemListScreen(
-    onSave: (name: String) -> Unit,
-    modifier: Modifier = Modifier,
+    navController: NavController,
     listWeighedData: List<WeighedItemUI>? = null
 ) {
-    Column(modifier = modifier) {
-        var nameMyModel by remember { mutableStateOf("Compose") }
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(bottom = 24.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            TextField(
-                value = nameMyModel,
-                onValueChange = { nameMyModel = it }
-            )
 
-            Button(modifier = Modifier.width(96.dp), onClick = { onSave(nameMyModel) }) {
-                Text("Save")
+    Scaffold(
+        floatingActionButton = {
+            CreateWeighedItemButton {
+                navController.navigate("create")
             }
         }
+    ) { paddingValues ->
 
-        listWeighedData?.forEach { data ->
-            WeighedItem(weighedItem = data) {
-                Log.d("Lol", "Weighed data id: $it clicked")
+        Column(modifier = Modifier.padding(paddingValues)) {
+
+            var nameMyModel by remember { mutableStateOf("Compose") }
+
+            listWeighedData?.forEach { data ->
+                WeighedItem(weighedItem = data) {
+                    Log.d("Lol", "Weighed data id: $it clicked")
+                }
             }
+
         }
     }
 }
@@ -140,7 +119,7 @@ internal fun CreateWeighedItemButton(onClick: () -> Unit) {
 private fun DefaultPreview() {
     MyApplicationTheme {
         WeighedItemListScreen(
-            onSave = {},
+            navController = rememberNavController(),
             listWeighedData = listOf(
                 WeighedItemUI(
                     id = 0,
