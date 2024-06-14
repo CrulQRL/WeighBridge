@@ -38,6 +38,6 @@ fun MainNavigation() {
         composable("list") { WeighedItemListScreen(modifier = Modifier.padding(16.dp), navController = navController) }
         composable("create") { CreateWeighedItemScreen(navController) }
         composable("detail") { DetailWeighedItemScreen(navController) }
-        composable("edit") { EditWeighedItemScreen() }
+        composable("edit") { EditWeighedItemScreen(navController) }
     }
 }

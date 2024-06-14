@@ -47,7 +47,7 @@ fun CreateWeighedItemScreen(navController: NavController) {
                     Text("Create Item")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { /* do something */ }) {
+                    IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back button"

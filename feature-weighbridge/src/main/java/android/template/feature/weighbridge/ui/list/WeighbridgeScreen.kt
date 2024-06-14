@@ -33,7 +33,8 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
 import android.template.core.ui.MyApplicationTheme
 import android.template.feature.weighbridge.ui.WeighedItemUI
-import android.util.Log
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -66,7 +67,37 @@ fun WeighedItemListScreen(
         }
     }
 
-    WeighedItemListScreen(navController)
+    val listWeighedData = listOf(
+        WeighedItemUI(
+            id = 0,
+            dateTime = "14 Jun 2024 13:35",
+            license = "B 6572 CCA",
+            driver = "Komang",
+            inbound = "0,2",
+            outbound = "0.45",
+            netWeight = "0.25"
+        ),
+        WeighedItemUI(
+            id = 1,
+            dateTime = "15 Jun 2024 13:35",
+            license = "B 7772 DAB",
+            driver = "Budi",
+            inbound = "0,2",
+            outbound = "0.45",
+            netWeight = "0.25"
+        ),
+        WeighedItemUI(
+            id = 2,
+            dateTime = "16 Jun 2024 13:35",
+            license = "B 1318 OPE",
+            driver = "Sudarso",
+            inbound = "0,2",
+            outbound = "0.45",
+            netWeight = "0.25"
+        )
+    )
+
+    WeighedItemListScreen(navController, listWeighedData)
 
 //    if (items is Success) {
 //        WeighedItemListScreen(
@@ -109,7 +140,7 @@ internal fun WeighedItemListScreen(
 
             listWeighedData?.forEach { data ->
                 WeighedItem(weighedItem = data) {
-                    Log.d("Lol", "Weighed data id: $it clicked")
+                    navController.navigate("detail")
                 }
             }
 
@@ -120,11 +151,22 @@ internal fun WeighedItemListScreen(
 @Composable
 internal fun CreateWeighedItemButton(onClick: () -> Unit) {
     FloatingActionButton(
-        modifier = Modifier.padding(0.dp, 0.dp, 24.dp, 24.dp),
+        modifier = Modifier
+            .padding(0.dp, 0.dp, 24.dp, 24.dp)
+            .height(86.dp)
+            .width(86.dp)
+        ,
         shape = CircleShape,
         onClick = { onClick() },
     ) {
-        Icon(Icons.Filled.Add, "Create WeighedItem button")
+        Icon(
+            modifier = Modifier
+                .height(46.dp)
+                .width(46.dp)
+            ,
+            imageVector = Icons.Filled.Add,
+            contentDescription = "Create WeighedItem button"
+        )
     }
 }
 
