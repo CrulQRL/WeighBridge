@@ -2,6 +2,7 @@ package android.template.feature.weighbridge.ui.detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,11 +37,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 
 
 @ExperimentalMaterial3Api
 @Composable
-fun DetailWeighedItemScreen() {
+fun DetailWeighedItemScreen(navController: NavController) {
 
     Scaffold(
         topBar = {
@@ -72,7 +75,10 @@ fun DetailWeighedItemScreen() {
                 Box(modifier = Modifier
                     .wrapContentSize()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp)
-                    .border(2.dp, MaterialTheme.colorScheme.primary,RoundedCornerShape(8.dp))
+                    .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
+                    .clickable {
+                        navController.navigate("edit")
+                    }
                 ) {
                     Row(
                         modifier = Modifier.padding(8.dp),
@@ -85,7 +91,7 @@ fun DetailWeighedItemScreen() {
                         )
                         Icon(
                             imageVector = Icons.Filled.Create,
-                            contentDescription = "Localized description"
+                            contentDescription = "Edit icon"
                         )
                     }
                 }
@@ -219,5 +225,5 @@ fun DetailWeighedItemScreen() {
 @Preview(showBackground = true)
 @Composable
 private fun Preview() {
-    DetailWeighedItemScreen()
+    DetailWeighedItemScreen(rememberNavController())
 }

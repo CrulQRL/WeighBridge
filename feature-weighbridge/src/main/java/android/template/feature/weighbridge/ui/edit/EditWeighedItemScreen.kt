@@ -1,4 +1,4 @@
-package android.template.feature.weighbridge.ui.create
+package android.template.feature.weighbridge.ui.edit
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,12 +25,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateWeighedItemScreen(navController: NavController) {
+fun EditWeighedItemScreen() {
 
     Scaffold(
         topBar = {
@@ -39,7 +37,7 @@ fun CreateWeighedItemScreen(navController: NavController) {
                     containerColor = MaterialTheme.colorScheme.primary
                 ),
                 title = {
-                    Text("Create Item")
+                    Text("Edit Item")
                 },
                 navigationIcon = {
                     IconButton(onClick = { /* do something */ }) {
@@ -117,8 +115,8 @@ fun CreateWeighedItemScreen(navController: NavController) {
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 private fun Preview() {
-    CreateWeighedItemScreen(rememberNavController())
+    EditWeighedItemScreen()
 }

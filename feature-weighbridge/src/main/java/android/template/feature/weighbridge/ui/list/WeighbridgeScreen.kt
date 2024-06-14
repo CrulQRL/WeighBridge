@@ -37,9 +37,14 @@ import android.util.Log
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.TopAppBarDefaults
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
@@ -73,6 +78,7 @@ fun WeighedItemListScreen(
 }
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun WeighedItemListScreen(
     navController: NavController,
@@ -80,6 +86,16 @@ internal fun WeighedItemListScreen(
 ) {
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                ),
+                title = {
+                    Text("List Item")
+                }
+            )
+        },
         floatingActionButton = {
             CreateWeighedItemButton {
                 navController.navigate("create")
