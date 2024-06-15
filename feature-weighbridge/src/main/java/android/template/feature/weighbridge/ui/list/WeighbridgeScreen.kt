@@ -35,9 +35,8 @@ import androidx.lifecycle.repeatOnLifecycle
 import android.template.core.ui.MyApplicationTheme
 import android.template.feature.weighbridge.ui.WeighedItemUI
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
@@ -129,6 +128,12 @@ internal fun WeighedItemListScreen(
     navController: NavController,
     listWeighedData: List<WeighedItemUI>? = null
 ) {
+    val showSortDialog = remember {
+        mutableStateOf(false)
+    }
+    val selectedSortType = remember {
+        mutableStateOf<SortType>(SortType.Newest)
+    }
 
     Scaffold(
         topBar = {
@@ -148,6 +153,13 @@ internal fun WeighedItemListScreen(
         }
     ) { paddingValues ->
 
+        if (showSortDialog.value) {
+            WeighedItemSortDialog(selectedSortType.value) {
+                showSortDialog.value = false
+                selectedSortType.value = it
+            }
+        }
+
         Column(
             modifier = Modifier
                 .padding(paddingValues)
@@ -164,7 +176,7 @@ internal fun WeighedItemListScreen(
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 SearchField(modifier = Modifier.weight(1f))
-                SortIcon()
+                SortIcon { showSortDialog.value = true }
             }
 
             listWeighedData?.forEach { data ->
@@ -213,11 +225,13 @@ internal fun SearchField(modifier: Modifier) {
 }
 
 @Composable
-internal fun SortIcon() {
+internal fun SortIcon(onClick: () -> Unit) {
     Icon(
         modifier = Modifier
             .width(48.dp)
-            .height(48.dp),
+            .height(48.dp)
+            .clickable { onClick() }
+        ,
         imageVector = Icons.Filled.ArrowDropDown,
         contentDescription = "Sort icon"
     )
@@ -227,7 +241,7 @@ internal fun SortIcon() {
 internal fun CreateWeighedItemButton(onClick: () -> Unit) {
     FloatingActionButton(
         modifier = Modifier
-            .padding(0.dp, 0.dp, 24.dp, 24.dp)
+            .padding(0.dp, 0.dp, 16.dp, 24.dp)
             .height(86.dp)
             .width(86.dp)
         ,
