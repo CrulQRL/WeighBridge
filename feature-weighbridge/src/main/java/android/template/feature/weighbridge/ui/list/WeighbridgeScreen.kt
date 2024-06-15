@@ -35,14 +35,17 @@ import androidx.lifecycle.repeatOnLifecycle
 import android.template.core.ui.MyApplicationTheme
 import android.template.feature.weighbridge.ui.WeighedItemUI
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
@@ -146,7 +149,10 @@ internal fun WeighedItemListScreen(
     ) { paddingValues ->
 
         Column(
-            modifier = Modifier.padding(paddingValues),
+            modifier = Modifier
+                .padding(paddingValues)
+                .wrapContentWidth()
+            ,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
@@ -154,36 +160,11 @@ internal fun WeighedItemListScreen(
 
             Row(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp)
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Grey1)
-                ,
-                verticalAlignment = Alignment.CenterVertically
+                    .padding(horizontal = 8.dp, vertical = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Icon(
-                    modifier = Modifier
-                        .padding(start = 12.dp)
-                        .height(38.dp)
-                        .width(38.dp),
-                    imageVector = Icons.Filled.Search,
-                    contentDescription = "Search Icon"
-                )
-                TextField(
-                    colors = TextFieldDefaults.colors(
-                        focusedContainerColor = Color.Transparent,
-                        unfocusedContainerColor = Color.Transparent,
-                        disabledContainerColor = Color.Transparent,
-                        errorContainerColor = Color.Transparent,
-                        focusedIndicatorColor = Color.Transparent,
-                        unfocusedIndicatorColor = Color.Transparent,
-                        disabledIndicatorColor = Color.Transparent,
-                        errorIndicatorColor = Color.Transparent
-                    ),
-                    placeholder = { Text(text = "Search by driver name or license") },
-                    value = "",
-                    onValueChange = {}
-                )
+                SearchField(modifier = Modifier.weight(1f))
+                SortIcon()
             }
 
             listWeighedData?.forEach { data ->
@@ -194,6 +175,52 @@ internal fun WeighedItemListScreen(
 
         }
     }
+}
+
+@Composable
+internal fun SearchField(modifier: Modifier) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(8.dp))
+            .background(Grey1)
+        ,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            modifier = Modifier
+                .padding(start = 12.dp)
+                .height(38.dp)
+                .width(38.dp),
+            imageVector = Icons.Filled.Search,
+            contentDescription = "Search Icon"
+        )
+        TextField(
+            colors = TextFieldDefaults.colors(
+                focusedContainerColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                errorContainerColor = Color.Transparent,
+                focusedIndicatorColor = Color.Transparent,
+                unfocusedIndicatorColor = Color.Transparent,
+                disabledIndicatorColor = Color.Transparent,
+                errorIndicatorColor = Color.Transparent
+            ),
+            placeholder = { Text(text = "Search by driver name or license") },
+            value = "",
+            onValueChange = {}
+        )
+    }
+}
+
+@Composable
+internal fun SortIcon() {
+    Icon(
+        modifier = Modifier
+            .width(48.dp)
+            .height(48.dp),
+        imageVector = Icons.Filled.ArrowDropDown,
+        contentDescription = "Sort icon"
+    )
 }
 
 @Composable
