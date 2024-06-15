@@ -16,6 +16,7 @@
 
 package android.template.feature.weighbridge.ui.list
 
+import android.template.core.ui.Grey1
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
@@ -33,19 +34,29 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
 import android.template.core.ui.MyApplicationTheme
 import android.template.feature.weighbridge.ui.WeighedItemUI
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
@@ -134,9 +145,46 @@ internal fun WeighedItemListScreen(
         }
     ) { paddingValues ->
 
-        Column(modifier = Modifier.padding(paddingValues)) {
+        Column(
+            modifier = Modifier.padding(paddingValues),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
 
             var nameMyModel by remember { mutableStateOf("Compose") }
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Grey1)
+                ,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .padding(start = 12.dp)
+                        .height(38.dp)
+                        .width(38.dp),
+                    imageVector = Icons.Filled.Search,
+                    contentDescription = "Search Icon"
+                )
+                TextField(
+                    colors = TextFieldDefaults.colors(
+                        focusedContainerColor = Color.Transparent,
+                        unfocusedContainerColor = Color.Transparent,
+                        disabledContainerColor = Color.Transparent,
+                        errorContainerColor = Color.Transparent,
+                        focusedIndicatorColor = Color.Transparent,
+                        unfocusedIndicatorColor = Color.Transparent,
+                        disabledIndicatorColor = Color.Transparent,
+                        errorIndicatorColor = Color.Transparent
+                    ),
+                    placeholder = { Text(text = "Search by driver name or license") },
+                    value = "",
+                    onValueChange = {}
+                )
+            }
 
             listWeighedData?.forEach { data ->
                 WeighedItem(weighedItem = data) {
