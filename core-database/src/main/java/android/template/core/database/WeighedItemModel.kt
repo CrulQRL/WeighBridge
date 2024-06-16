@@ -27,7 +27,8 @@ import kotlinx.coroutines.flow.Flow
 @Entity(tableName = "weighed_item_model")
 data class WeighedItemModel(
     @PrimaryKey(autoGenerate = true)
-    val uid: Int = 0,
+    @ColumnInfo(name = "uid")
+    val uid: Long = 0,
     @ColumnInfo(name = "date_time")
     val dateTime: Long,
     @ColumnInfo(name = "license")
@@ -39,7 +40,7 @@ data class WeighedItemModel(
     @ColumnInfo(name = "outbound")
     val outbound: String,
     @ColumnInfo(name = "net_weight")
-    val netWeight: String
+    val netWeight: String? = null
 )
 
 @Dao
@@ -48,5 +49,5 @@ interface WeighedItemDao {
     fun getWeighedItems(): Flow<List<WeighedItemModel>>
 
     @Insert
-    suspend fun insertWeighedItem(item: WeighedItemModel)
+    suspend fun insertWeighedItem(item: WeighedItemModel): Long
 }

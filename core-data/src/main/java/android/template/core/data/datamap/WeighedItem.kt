@@ -3,13 +3,13 @@ package android.template.core.data.datamap
 import android.template.core.database.WeighedItemModel
 
 data class WeighedItem(
-    val uid: Int,
+    val uid: Long,
     val dateTime: Long,
     val license: String,
     val driver: String,
     val inbound: String,
     val outbound: String,
-    val netWeight: String
+    val netWeight: String?
 )
 
 fun WeighedItemModel.mapModel(): WeighedItem {

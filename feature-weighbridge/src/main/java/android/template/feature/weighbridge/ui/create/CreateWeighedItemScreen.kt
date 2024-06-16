@@ -172,7 +172,7 @@ fun CreateWeighedItemScreen(
                         modifier = Modifier.padding(16.dp),
                         shape = RoundedCornerShape(8.dp),
                         enabled = uiState.isValidForm,
-                        onClick = {  }
+                        onClick = { viewModel.submitNewWeighedItem() }
                     ) {
                         Text(
                             modifier = Modifier.padding(vertical = 4.dp),

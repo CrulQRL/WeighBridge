@@ -62,8 +62,9 @@ private class FakeWeighedItemRepository : WeighedItemRepository {
         driver: String,
         inbound: String,
         outbound: String,
-        netWeight: String
-    ) {
+        netWeight: String?
+    ): Long {
+        return 0
 //        data.add(0, WeighedItem())
     }
 }

@@ -33,8 +33,8 @@ interface WeighedItemRepository {
         driver: String,
         inbound: String,
         outbound: String,
-        netWeight: String
-    )
+        netWeight: String? = null
+    ): Long
 }
 
 class DefaultWeighedItemRepository @Inject constructor(
@@ -50,9 +50,9 @@ class DefaultWeighedItemRepository @Inject constructor(
         driver: String,
         inbound: String,
         outbound: String,
-        netWeight: String
-    ) {
-        weighedItemDao.insertWeighedItem(
+        netWeight: String?
+    ): Long {
+        return weighedItemDao.insertWeighedItem(
             WeighedItemModel(
                 dateTime = dateTime,
                 license = license,

@@ -2,16 +2,21 @@ package android.template.feature.weighbridge.ui.create
 
 import android.template.core.data.WeighedItemRepository
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import java.math.BigDecimal
+import java.math.RoundingMode
 import javax.inject.Inject
 
 @HiltViewModel
 class CreateWeighedItemViewModel @Inject constructor(
-    weighedItemRepository: WeighedItemRepository
+    private val weighedItemRepository: WeighedItemRepository
 ): ViewModel() {
 
     private val _uiState = MutableStateFlow(CreateWeighedItemUiState())
@@ -27,7 +32,8 @@ class CreateWeighedItemViewModel @Inject constructor(
     }
 
     fun setDriver(newDriver: String) {
-        val formattedDriver = newDriver.filter { char -> char.isLetter() || char.isWhitespace() }
+        val formattedDriver = newDriver.filter { char -> char.isLetter() || char.isWhitespace() }.replace("\\s+".toRegex(), " ")
+
         _uiState.update { currentState ->
             currentState.copy(newDriver = formattedDriver)
         }
@@ -37,10 +43,12 @@ class CreateWeighedItemViewModel @Inject constructor(
 
     fun setInbound(newInbound: String) {
 
+        if (newInbound.length > 5) return
+
         try {
-            newInbound.replace(",", ".").toDouble()
+            val inboundNum = newInbound.replace(",", ".").toDouble()
             _uiState.update { currentState ->
-                currentState.copy(newInbound = newInbound, isValidInbound = true)
+                currentState.copy(newInbound = newInbound, isValidInbound = inboundNum != 0.0)
             }
             updateIsValidForm()
         } catch (ex: NumberFormatException) {
@@ -52,8 +60,12 @@ class CreateWeighedItemViewModel @Inject constructor(
 
     fun setOutbound(newOutbound: String) {
 
+        if (newOutbound.length > 5) return
+
         try {
-            newOutbound.replace(",", ".").toDouble()
+            if (newOutbound.isNotBlank()) {
+                newOutbound.replace(",", ".").toDouble()
+            }
             _uiState.update { currentState ->
                 currentState.copy(newOutbound = newOutbound, isValidOutbound = true)
             }
@@ -67,14 +79,38 @@ class CreateWeighedItemViewModel @Inject constructor(
 
     private fun updateIsValidForm() {
         _uiState.update { currentState ->
-            val isValid = currentState.newLicense.isNotBlank()
+            val isValidInput = currentState.newLicense.isNotBlank()
                     && currentState.newDriver.isNotBlank()
                     && currentState.newInbound.isNotBlank()
-                    && currentState.newOutbound.isNotBlank()
                     && currentState.isValidInbound
                     && currentState.isValidOutbound
 
-            currentState.copy(isValidForm = isValid)
+            val isValidNetWeight = if (currentState.newOutbound.isNotBlank()) {
+                currentState.newOutbound.toDouble() - currentState.newInbound.toDouble() > 0.0
+            } else true
+
+            currentState.copy(isValidForm = isValidInput && isValidNetWeight, isValidOutbound = isValidNetWeight)
+        }
+    }
+
+    fun submitNewWeighedItem() {
+
+        val netWeight = if (uiState.value.newOutbound.isNotBlank())  {
+            val diff = uiState.value.newOutbound.toDouble() - uiState.value.newInbound.toDouble()
+            BigDecimal(diff).setScale(3, RoundingMode.HALF_UP)
+                .stripTrailingZeros()
+                .toPlainString()
+        } else null
+
+        viewModelScope.launch(Dispatchers.IO) {
+            val id = weighedItemRepository.add(
+                dateTime = System.currentTimeMillis(),
+                license = uiState.value.newLicense,
+                driver = uiState.value.newDriver.trim(),
+                inbound = uiState.value.newInbound,
+                outbound = uiState.value.newOutbound,
+                netWeight = netWeight
+            )
         }
     }
 }

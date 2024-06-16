@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat
 import java.util.Locale
 
 data class ListWeighedItemModel(
-    val uid: Int,
+    val uid: Long,
     val dateTime: String,
     val driver: String,
     val license: String

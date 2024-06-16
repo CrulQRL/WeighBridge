@@ -48,8 +48,8 @@ class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
         driver: String,
         inbound: String,
         outbound: String,
-        netWeight: String
-    ) {
+        netWeight: String?
+    ): Long {
         throw NotImplementedError()
     }
 }

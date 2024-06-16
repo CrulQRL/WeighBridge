@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "9646cc1f5867c167d6f5b65de0d2491e",
+    "identityHash": "3ba4c9a177ec2b3bff0120e32f662740",
     "entities": [
       {
         "tableName": "weighed_item_model",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date_time` INTEGER NOT NULL, `license` TEXT NOT NULL, `driver` TEXT NOT NULL, `inbound` TEXT NOT NULL, `outbound` TEXT NOT NULL, `net_weight` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `date_time` INTEGER NOT NULL, `license` TEXT NOT NULL, `driver` TEXT NOT NULL, `inbound` TEXT NOT NULL, `outbound` TEXT NOT NULL, `net_weight` TEXT)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -48,7 +48,7 @@
             "fieldPath": "netWeight",
             "columnName": "net_weight",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -64,7 +64,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '9646cc1f5867c167d6f5b65de0d2491e')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '3ba4c9a177ec2b3bff0120e32f662740')"
     ]
   }
 }

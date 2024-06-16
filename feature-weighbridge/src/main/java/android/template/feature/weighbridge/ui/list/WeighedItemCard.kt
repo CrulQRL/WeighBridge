@@ -30,7 +30,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeighedItemCard(weighedItem: ListWeighedItemModel, onClick: (id: Int) -> Unit) {
+fun WeighedItemCard(weighedItem: ListWeighedItemModel, onClick: (id: Long) -> Unit) {
 
     Card(
         modifier = Modifier
