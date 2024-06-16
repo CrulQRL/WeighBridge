@@ -127,6 +127,5 @@ data class CreateWeighedItemUiState(
     val isValidInbound: Boolean = true,
     val isValidOutbound: Boolean = true,
     val isValidForm: Boolean = false,
-    val isLoading: Boolean = false,
     val newWeighedItemId: Long? = null
 )

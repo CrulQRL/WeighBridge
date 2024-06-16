@@ -52,6 +52,10 @@ class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
     ): Long {
         throw NotImplementedError()
     }
+
+    override fun getItem(uid: Long): Flow<WeighedItem> {
+        TODO("Not yet implemented")
+    }
 }
 
 val fakeMyModels = listOf<WeighedItem>()

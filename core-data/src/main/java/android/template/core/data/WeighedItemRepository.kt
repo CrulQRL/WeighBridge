@@ -35,6 +35,8 @@ interface WeighedItemRepository {
         outbound: String,
         netWeight: String? = null
     ): Long
+
+    fun getItem(uid: Long): Flow<WeighedItem>
 }
 
 class DefaultWeighedItemRepository @Inject constructor(
@@ -62,5 +64,9 @@ class DefaultWeighedItemRepository @Inject constructor(
                 netWeight = netWeight
             )
         )
+    }
+
+    override fun getItem(uid: Long): Flow<WeighedItem> {
+        return weighedItemDao.getWeighedItem(uid).map { it.mapModel() }
     }
 }

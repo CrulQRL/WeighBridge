@@ -50,4 +50,7 @@ interface WeighedItemDao {
 
     @Insert
     suspend fun insertWeighedItem(item: WeighedItemModel): Long
+
+    @Query("SELECT * FROM weighed_item_model where uid = :uid")
+    fun getWeighedItem(uid: Long): Flow<WeighedItemModel>
 }

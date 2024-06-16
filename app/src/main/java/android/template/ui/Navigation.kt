@@ -28,6 +28,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import android.template.feature.weighbridge.ui.list.WeighedItemListScreen
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +39,13 @@ fun MainNavigation() {
     NavHost(navController = navController, startDestination = "list") {
         composable("list") { WeighedItemListScreen(modifier = Modifier.padding(16.dp), navController = navController) }
         composable("create") { CreateWeighedItemScreen(navController) }
-        composable("detail") { DetailWeighedItemScreen(navController) }
+        composable(
+            route = "detail/{uid}",
+            arguments = listOf(navArgument("uid"){ type = NavType.LongType })
+        ) { entry ->
+            val uid = entry.arguments?.getLong("uid") ?: return@composable
+            DetailWeighedItemScreen(navController)
+        }
         composable("edit") { EditWeighedItemScreen(navController) }
     }
 }

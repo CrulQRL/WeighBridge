@@ -163,8 +163,6 @@ internal fun WeighedItemListScreen(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
 
-            var nameMyModel by remember { mutableStateOf("Compose") }
-
             Row(
                 modifier = Modifier
                     .padding(horizontal = 8.dp, vertical = 16.dp),
@@ -175,8 +173,8 @@ internal fun WeighedItemListScreen(
             }
 
             listWeighedData.forEach { data ->
-                WeighedItemCard(weighedItem = data) {
-                    navController.navigate("detail")
+                WeighedItemCard(weighedItem = data) { uid ->
+                    navController.navigate("detail/$uid")
                 }
             }
 
