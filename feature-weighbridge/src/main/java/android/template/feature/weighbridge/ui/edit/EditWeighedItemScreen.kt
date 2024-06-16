@@ -47,7 +47,7 @@ fun EditWeighedItemScreen(navController: NavController) {
                     Text("Edit Item")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Back button"

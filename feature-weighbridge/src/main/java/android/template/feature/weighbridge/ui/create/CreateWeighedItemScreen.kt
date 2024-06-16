@@ -59,6 +59,10 @@ fun CreateWeighedItemScreen(
         }
     }
 
+    if (uiState.newWeighedItemId != null) {
+        navController.navigateUp()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(

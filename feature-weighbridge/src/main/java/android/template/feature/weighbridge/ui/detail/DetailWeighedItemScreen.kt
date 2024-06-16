@@ -55,7 +55,7 @@ fun DetailWeighedItemScreen(navController: NavController) {
                     Text("Detail Item")
                 },
                 navigationIcon = {
-                    IconButton(onClick = { navController.popBackStack() }) {
+                    IconButton(onClick = { navController.navigateUp() }) {
                         Icon(
                             imageVector = Icons.Filled.ArrowBack,
                             contentDescription = "Localized description"

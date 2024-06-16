@@ -23,6 +23,8 @@ class CreateWeighedItemViewModel @Inject constructor(
     val uiState: StateFlow<CreateWeighedItemUiState> = _uiState.asStateFlow()
 
     fun setLicense(newLicense: String) {
+        if (newLicense.length > 8) return
+
         val formattedLicense = newLicense.filter { char -> char.isDigit() || char.isLetter()}
         _uiState.update { currentState ->
             currentState.copy(newLicense = formattedLicense)
@@ -108,9 +110,11 @@ class CreateWeighedItemViewModel @Inject constructor(
                 license = uiState.value.newLicense,
                 driver = uiState.value.newDriver.trim(),
                 inbound = uiState.value.newInbound,
-                outbound = uiState.value.newOutbound,
+                outbound = uiState.value.newOutbound.ifBlank { "0" },
                 netWeight = netWeight
             )
+
+            _uiState.update { currentState -> currentState.copy(newWeighedItemId = id) }
         }
     }
 }
@@ -123,5 +127,6 @@ data class CreateWeighedItemUiState(
     val isValidInbound: Boolean = true,
     val isValidOutbound: Boolean = true,
     val isValidForm: Boolean = false,
-    val isLoading: Boolean = false
+    val isLoading: Boolean = false,
+    val newWeighedItemId: Long? = null
 )
