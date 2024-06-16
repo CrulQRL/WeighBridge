@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -24,18 +25,39 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun CreateWeighedItemScreen(navController: NavController) {
+fun CreateWeighedItemScreen(
+    navController: NavController,
+    viewModel: CreateWeighedItemViewModel = hiltViewModel()
+) {
+
+    val lifecycle = LocalLifecycleOwner.current.lifecycle
+    val uiState by produceState(
+        initialValue = CreateWeighedItemUiState(),
+        key1 = lifecycle,
+        key2 = viewModel
+    ) {
+        lifecycle.repeatOnLifecycle(state = Lifecycle.State.STARTED) {
+            viewModel.uiState.collect { value = it }
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -67,52 +89,58 @@ fun CreateWeighedItemScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                value = "",
+                value = uiState.newLicense,
                 onValueChange = { newText ->
-
+                    viewModel.setLicense(newText)
                 },
                 label = {
                     Text(text = "License Number")
-                }
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )
 
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                value = "",
+                value = uiState.newDriver,
                 onValueChange = { newText ->
-
+                    viewModel.setDriver(newText)
                 },
                 label = {
                     Text(text = "Driver Name")
-                }
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )
 
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                value = "",
+                value = uiState.newInbound,
                 onValueChange = { newText ->
-
+                    viewModel.setInbound(newText)
                 },
+                isError = !uiState.isValidInbound,
                 label = {
                     Text(text = "Inbound")
-                }
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
 
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                value = "",
+                value = uiState.newOutbound,
                 onValueChange = { newText ->
-
+                    viewModel.setOutbound(newText)
                 },
+                isError = !uiState.isValidOutbound,
                 label = {
                     Text(text = "Outbound")
-                }
+                },
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal)
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -143,6 +171,7 @@ fun CreateWeighedItemScreen(navController: NavController) {
                     Button(
                         modifier = Modifier.padding(16.dp),
                         shape = RoundedCornerShape(8.dp),
+                        enabled = uiState.isValidForm,
                         onClick = {  }
                     ) {
                         Text(

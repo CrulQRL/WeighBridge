@@ -25,7 +25,8 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import android.template.core.data.WeighedItemRepository
-import android.template.feature.weighbridge.ui.list.MyModelUiState
+import android.template.core.data.datamap.WeighedItem
+import android.template.feature.weighbridge.ui.list.WeighedItemUiState
 import android.template.feature.weighbridge.ui.list.WeighedItemViewModel
 
 /**
@@ -38,24 +39,31 @@ class WeighedItemViewModelTest {
     @Test
     fun uiState_initiallyLoading() = runTest {
         val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
-        assertEquals(viewModel.uiState.first(), MyModelUiState.Loading)
+        assertEquals(viewModel.uiState.first(), WeighedItemUiState.Loading)
     }
 
     @Test
     fun uiState_onItemSaved_isDisplayed() = runTest {
         val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
-        assertEquals(viewModel.uiState.first(), MyModelUiState.Loading)
+        assertEquals(viewModel.uiState.first(), WeighedItemUiState.Loading)
     }
 }
 
 private class FakeWeighedItemRepository : WeighedItemRepository {
 
-    private val data = mutableListOf<WeighedItemModel>()
+    private val data = mutableListOf<WeighedItem>()
 
-    override val weighedItemModels: Flow<List<WeighedItemModel>>
+    override val weighedItemModels: Flow<List<WeighedItem>>
         get() = flow { emit(data.toList()) }
 
-    override suspend fun add(weighedItem: WeighedItemModel) {
-        data.add(0, weighedItem)
+    override suspend fun add(
+        dateTime: Long,
+        license: String,
+        driver: String,
+        inbound: String,
+        outbound: String,
+        netWeight: String
+    ) {
+//        data.add(0, WeighedItem())
     }
 }

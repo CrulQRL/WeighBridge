@@ -1,6 +1,7 @@
 package android.template.feature.weighbridge.ui.list
 
 import android.template.core.ui.MyApplicationTheme
+import android.template.feature.weighbridge.ui.list.uimodel.ListWeighedItemModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +30,7 @@ import androidx.compose.ui.unit.sp
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun WeighedItemCard(weighedItem: ListUIState, onClick: (id: Int) -> Unit) {
+fun WeighedItemCard(weighedItem: ListWeighedItemModel, onClick: (id: Int) -> Unit) {
 
     Card(
         modifier = Modifier
@@ -99,7 +100,7 @@ fun LicenseTag(license: String) {
 fun WeighedItemPreview() {
     MyApplicationTheme {
         WeighedItemCard(
-            ListUIState(
+            ListWeighedItemModel(
             uid = 0,
             dateTime = "14 Jun 2024 13:35",
             license = "B 7772 DAB",

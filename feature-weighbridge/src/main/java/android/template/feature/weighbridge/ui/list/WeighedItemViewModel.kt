@@ -26,25 +26,27 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import android.template.core.data.WeighedItemRepository
 import android.template.core.data.datamap.WeighedItem
-import android.template.feature.weighbridge.ui.list.MyModelUiState.Error
-import android.template.feature.weighbridge.ui.list.MyModelUiState.Loading
-import android.template.feature.weighbridge.ui.list.MyModelUiState.Success
+import android.template.feature.weighbridge.ui.list.WeighedItemUiState.Error
+import android.template.feature.weighbridge.ui.list.WeighedItemUiState.Loading
+import android.template.feature.weighbridge.ui.list.WeighedItemUiState.Success
+import android.template.feature.weighbridge.ui.list.uimodel.ListWeighedItemModel
+import android.template.feature.weighbridge.ui.list.uimodel.mapUI
 import javax.inject.Inject
 
 @HiltViewModel
 class WeighedItemViewModel @Inject constructor(
-    private val weighedItemRepository: WeighedItemRepository
+    weighedItemRepository: WeighedItemRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<MyModelUiState> = weighedItemRepository
-        .weighedItemModels.map<List<WeighedItem>, MyModelUiState> { Success(data = it.mapUI()) }
+    val uiState: StateFlow<WeighedItemUiState> = weighedItemRepository
+        .weighedItemModels.map<List<WeighedItem>, WeighedItemUiState> { Success(data = it.mapUI()) }
         .catch { emit(Error(it)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
 
 }
 
-sealed interface MyModelUiState {
-    object Loading : MyModelUiState
-    data class Error(val throwable: Throwable) : MyModelUiState
-    data class Success(val data: List<ListUIState>) : MyModelUiState
+sealed interface WeighedItemUiState {
+    object Loading : WeighedItemUiState
+    data class Error(val throwable: Throwable) : WeighedItemUiState
+    data class Success(val data: List<ListWeighedItemModel>) : WeighedItemUiState
 }

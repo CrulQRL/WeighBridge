@@ -34,6 +34,7 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
 import android.template.core.ui.MyApplicationTheme
 import android.template.feature.weighbridge.ui.WeighedItemUI
+import android.template.feature.weighbridge.ui.list.uimodel.ListWeighedItemModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -70,8 +71,8 @@ fun WeighedItemListScreen(
 )
 {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val items by produceState<MyModelUiState>(
-        initialValue = MyModelUiState.Loading,
+    val items by produceState<WeighedItemUiState>(
+        initialValue = WeighedItemUiState.Loading,
         key1 = lifecycle,
         key2 = viewModel
     ) {
@@ -110,8 +111,8 @@ fun WeighedItemListScreen(
         )
     )
 
-    if (items is MyModelUiState.Success) {
-        WeighedItemListScreen(navController, (items as MyModelUiState.Success).data)
+    if (items is WeighedItemUiState.Success) {
+        WeighedItemListScreen(navController, (items as WeighedItemUiState.Success).data)
     }
 }
 
@@ -120,7 +121,7 @@ fun WeighedItemListScreen(
 @Composable
 internal fun WeighedItemListScreen(
     navController: NavController,
-    listWeighedData: List<ListUIState>
+    listWeighedData: List<ListWeighedItemModel>
 ) {
     val showSortDialog = remember {
         mutableStateOf(false)
@@ -262,19 +263,19 @@ private fun DefaultPreview() {
         WeighedItemListScreen(
             navController = rememberNavController(),
             listWeighedData = listOf(
-                ListUIState(
+                ListWeighedItemModel(
                     uid = 0,
                     dateTime = "14 Jun 2024 13:35",
                     license = "B 6572 CCA",
                     driver = "Komang"
                 ),
-                ListUIState(
+                ListWeighedItemModel(
                     uid = 1,
                     dateTime = "15 Jun 2024 13:35",
                     license = "B 7772 DAB",
                     driver = "Budi"
                 ),
-                ListUIState(
+                ListWeighedItemModel(
                     uid = 2,
                     dateTime = "16 Jun 2024 13:35",
                     license = "B 1318 OPE",
