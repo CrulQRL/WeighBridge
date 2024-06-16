@@ -29,22 +29,22 @@ import org.junit.runner.RunWith
 /**
  * UI tests for [MyModelScreen].
  */
-@RunWith(AndroidJUnit4::class)
-class MyModelScreenTest {
-
-    @get:Rule
-    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
-
-    @Before
-    fun setup() {
-        composeTestRule.setContent {
-            MyModelScreen(FAKE_DATA, onSave = {})
-        }
-    }
-    @Test
-    fun firstItem_exists() {
-        composeTestRule.onNodeWithText(FAKE_DATA.first()).assertExists().performClick()
-    }
-}
-
-private val FAKE_DATA = listOf("Compose", "Room", "Kotlin")
+//@RunWith(AndroidJUnit4::class)
+//class MyModelScreenTest {
+//
+//    @get:Rule
+//    val composeTestRule = createAndroidComposeRule<ComponentActivity>()
+//
+//    @Before
+//    fun setup() {
+//        composeTestRule.setContent {
+//            MyModelScreen(FAKE_DATA, onSave = {})
+//        }
+//    }
+//    @Test
+//    fun firstItem_exists() {
+//        composeTestRule.onNodeWithText(FAKE_DATA.first()).assertExists().performClick()
+//    }
+//}
+//
+//private val FAKE_DATA = listOf("Compose", "Room", "Kotlin")

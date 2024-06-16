@@ -23,36 +23,36 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import android.template.core.data.DefaultMyModelRepository
-import android.template.core.database.MyModel
-import android.template.core.database.MyModelDao
+import android.template.core.data.DefaultWeighedItemRepository
+import android.template.core.database.WeighedItemModel
+import android.template.core.database.WeighedItemDao
 
 /**
- * Unit tests for [DefaultMyModelRepository].
+ * Unit tests for [DefaultWeighedItemRepository].
  */
 @OptIn(ExperimentalCoroutinesApi::class) // TODO: Remove when stable
-class DefaultMyModelRepositoryTest {
+class DefaultWeighedItemRepositoryTest {
 
     @Test
     fun myModels_newItemSaved_itemIsReturned() = runTest {
-        val repository = DefaultMyModelRepository(FakeMyModelDao())
+        val repository = DefaultWeighedItemRepository(FakeWeighedItemDao())
 
         repository.add("Repository")
 
-        assertEquals(repository.myModels.first().size, 1)
+        assertEquals(repository.weighedItemModels.first().size, 1)
     }
 
 }
 
-private class FakeMyModelDao : MyModelDao {
+private class FakeWeighedItemDao : WeighedItemDao {
 
-    private val data = mutableListOf<MyModel>()
+    private val data = mutableListOf<WeighedItemModel>()
 
-    override fun getMyModels(): Flow<List<MyModel>> = flow {
+    override fun getWeighedItems(): Flow<List<WeighedItemModel>> = flow {
         emit(data)
     }
 
-    override suspend fun insertMyModel(item: MyModel) {
+    override suspend fun insertWeighedItem(item: WeighedItemModel) {
         data.add(0, item)
     }
 }

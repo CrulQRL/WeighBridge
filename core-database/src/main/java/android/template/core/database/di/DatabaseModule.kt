@@ -24,14 +24,14 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import android.template.core.database.AppDatabase
-import android.template.core.database.MyModelDao
+import android.template.core.database.WeighedItemDao
 import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
 class DatabaseModule {
     @Provides
-    fun provideMyModelDao(appDatabase: AppDatabase): MyModelDao {
+    fun provideMyModelDao(appDatabase: AppDatabase): WeighedItemDao {
         return appDatabase.myModelDao()
     }
 

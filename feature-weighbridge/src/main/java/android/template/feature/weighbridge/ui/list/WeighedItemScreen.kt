@@ -66,7 +66,7 @@ import androidx.navigation.compose.rememberNavController
 fun WeighedItemListScreen(
     navController: NavController,
     modifier: Modifier = Modifier,
-    viewModel: MyModelViewModel = hiltViewModel()
+    viewModel: WeighedItemViewModel = hiltViewModel()
 )
 {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
@@ -110,15 +110,9 @@ fun WeighedItemListScreen(
         )
     )
 
-    WeighedItemListScreen(navController, listWeighedData)
-
-//    if (items is Success) {
-//        WeighedItemListScreen(
-//            items = (items as Success).data,
-//            onSave = { name -> viewModel.addMyModel(name) },
-//            modifier = modifier
-//        )
-//    }
+    if (items is MyModelUiState.Success) {
+        WeighedItemListScreen(navController, (items as MyModelUiState.Success).data)
+    }
 }
 
 
@@ -126,7 +120,7 @@ fun WeighedItemListScreen(
 @Composable
 internal fun WeighedItemListScreen(
     navController: NavController,
-    listWeighedData: List<WeighedItemUI>? = null
+    listWeighedData: List<ListUIState>
 ) {
     val showSortDialog = remember {
         mutableStateOf(false)
@@ -179,8 +173,8 @@ internal fun WeighedItemListScreen(
                 SortIcon { showSortDialog.value = true }
             }
 
-            listWeighedData?.forEach { data ->
-                WeighedItem(weighedItem = data) {
+            listWeighedData.forEach { data ->
+                WeighedItemCard(weighedItem = data) {
                     navController.navigate("detail")
                 }
             }
@@ -268,32 +262,23 @@ private fun DefaultPreview() {
         WeighedItemListScreen(
             navController = rememberNavController(),
             listWeighedData = listOf(
-                WeighedItemUI(
-                    id = 0,
+                ListUIState(
+                    uid = 0,
                     dateTime = "14 Jun 2024 13:35",
                     license = "B 6572 CCA",
-                    driver = "Komang",
-                    inbound = "0,2",
-                    outbound = "0.45",
-                    netWeight = "0.25"
+                    driver = "Komang"
                 ),
-                WeighedItemUI(
-                    id = 1,
+                ListUIState(
+                    uid = 1,
                     dateTime = "15 Jun 2024 13:35",
                     license = "B 7772 DAB",
-                    driver = "Budi",
-                    inbound = "0,2",
-                    outbound = "0.45",
-                    netWeight = "0.25"
+                    driver = "Budi"
                 ),
-                WeighedItemUI(
-                    id = 2,
+                ListUIState(
+                    uid = 2,
                     dateTime = "16 Jun 2024 13:35",
                     license = "B 1318 OPE",
-                    driver = "Sudarso",
-                    inbound = "0,2",
-                    outbound = "0.45",
-                    netWeight = "0.25"
+                    driver = "Sudarso"
                 )
             )
         )

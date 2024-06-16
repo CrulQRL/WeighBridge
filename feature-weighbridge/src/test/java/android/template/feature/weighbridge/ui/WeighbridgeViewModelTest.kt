@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.template.feature.weighbridge.ui.mymodel
+package android.template.feature.weighbridge.ui
 
 
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -24,9 +24,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import android.template.core.data.MyModelRepository
+import android.template.core.data.WeighedItemRepository
 import android.template.feature.weighbridge.ui.list.MyModelUiState
-import android.template.feature.weighbridge.ui.list.MyModelViewModel
+import android.template.feature.weighbridge.ui.list.WeighedItemViewModel
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -34,28 +34,28 @@ import android.template.feature.weighbridge.ui.list.MyModelViewModel
  * See [testing documentation](http://d.android.com/tools/testing).
  */
 @OptIn(ExperimentalCoroutinesApi::class) // TODO: Remove when stable
-class MyModelViewModelTest {
+class WeighedItemViewModelTest {
     @Test
     fun uiState_initiallyLoading() = runTest {
-        val viewModel = MyModelViewModel(FakeMyModelRepository())
+        val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
         assertEquals(viewModel.uiState.first(), MyModelUiState.Loading)
     }
 
     @Test
     fun uiState_onItemSaved_isDisplayed() = runTest {
-        val viewModel = MyModelViewModel(FakeMyModelRepository())
+        val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
         assertEquals(viewModel.uiState.first(), MyModelUiState.Loading)
     }
 }
 
-private class FakeMyModelRepository : MyModelRepository {
+private class FakeWeighedItemRepository : WeighedItemRepository {
 
-    private val data = mutableListOf<String>()
+    private val data = mutableListOf<WeighedItemModel>()
 
-    override val myModels: Flow<List<String>>
+    override val weighedItemModels: Flow<List<WeighedItemModel>>
         get() = flow { emit(data.toList()) }
 
-    override suspend fun add(name: String) {
-        data.add(0, name)
+    override suspend fun add(weighedItem: WeighedItemModel) {
+        data.add(0, weighedItem)
     }
 }

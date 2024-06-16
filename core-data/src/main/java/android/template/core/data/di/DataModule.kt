@@ -22,8 +22,9 @@ import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
-import android.template.core.data.MyModelRepository
-import android.template.core.data.DefaultMyModelRepository
+import android.template.core.data.WeighedItemRepository
+import android.template.core.data.DefaultWeighedItemRepository
+import android.template.core.data.datamap.WeighedItem
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -33,17 +34,24 @@ interface DataModule {
 
     @Singleton
     @Binds
-    fun bindsMyModelRepository(
-        myModelRepository: DefaultMyModelRepository
-    ): MyModelRepository
+    fun bindsWeighedItemRepository(
+        myModelRepository: DefaultWeighedItemRepository
+    ): WeighedItemRepository
 }
 
-class FakeMyModelRepository @Inject constructor() : MyModelRepository {
-    override val myModels: Flow<List<String>> = flowOf(fakeMyModels)
+class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
+    override val weighedItemModels: Flow<List<WeighedItem>> = flowOf(fakeMyModels)
 
-    override suspend fun add(name: String) {
+    override suspend fun add(
+        dateTime: Long,
+        license: String,
+        driver: String,
+        inbound: String,
+        outbound: String,
+        netWeight: String
+    ) {
         throw NotImplementedError()
     }
 }
 
-val fakeMyModels = listOf("One", "Two", "Three")
+val fakeMyModels = listOf<WeighedItem>()

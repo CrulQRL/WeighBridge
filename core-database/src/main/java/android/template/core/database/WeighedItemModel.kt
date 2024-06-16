@@ -16,6 +16,7 @@
 
 package android.template.core.database
 
+import androidx.room.ColumnInfo
 import androidx.room.Dao
 import androidx.room.Entity
 import androidx.room.Insert
@@ -23,19 +24,29 @@ import androidx.room.PrimaryKey
 import androidx.room.Query
 import kotlinx.coroutines.flow.Flow
 
-@Entity
-data class MyModel(
-    val name: String
-) {
+@Entity(tableName = "weighed_item_model")
+data class WeighedItemModel(
     @PrimaryKey(autoGenerate = true)
-    var uid: Int = 0
-}
+    val uid: Int = 0,
+    @ColumnInfo(name = "date_time")
+    val dateTime: Long,
+    @ColumnInfo(name = "license")
+    val license: String,
+    @ColumnInfo(name = "driver")
+    val driver: String,
+    @ColumnInfo(name = "inbound")
+    val inbound: String,
+    @ColumnInfo(name = "outbound")
+    val outbound: String,
+    @ColumnInfo(name = "net_weight")
+    val netWeight: String
+)
 
 @Dao
-interface MyModelDao {
-    @Query("SELECT * FROM mymodel ORDER BY uid DESC LIMIT 10")
-    fun getMyModels(): Flow<List<MyModel>>
+interface WeighedItemDao {
+    @Query("SELECT * FROM weighed_item_model ORDER BY uid DESC LIMIT 10")
+    fun getWeighedItems(): Flow<List<WeighedItemModel>>
 
     @Insert
-    suspend fun insertMyModel(item: MyModel)
+    suspend fun insertWeighedItem(item: WeighedItemModel)
 }
