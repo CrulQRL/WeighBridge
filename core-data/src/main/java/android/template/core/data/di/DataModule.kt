@@ -43,6 +43,8 @@ interface DataModule {
 class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
     override val weighedItemModels: Flow<List<WeighedItem>> = flowOf(fakeMyModels)
 
+    private val data = fakeMyModels
+
     override suspend fun add(
         dateTime: Long,
         license: String,
@@ -51,11 +53,12 @@ class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
         outbound: String,
         netWeight: String?
     ): Long {
-        throw NotImplementedError()
+        return 0
+//        data.add(0, WeighedItem())
     }
 
     override fun getItemFlow(uid: Long): Flow<WeighedItem> {
-        TODO("Not yet implemented")
+        return flowOf(data.first { it.uid == uid })
     }
 
     override suspend fun getItem(uid: Long): WeighedItem {
@@ -63,7 +66,21 @@ class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
     }
 
     override fun getItems(sortType: SortType, query: String): Flow<List<WeighedItem>> {
-        TODO("Not yet implemented")
+        val queried = data.filter { it.driver.contains(query) || it.license.contains(query) }
+        return when(sortType) {
+            SortType.Newest -> {
+                flowOf(queried.sortedByDescending { it.dateTime })
+            }
+            SortType.Oldest -> {
+                flowOf(queried.sortedBy { it.dateTime })
+            }
+            SortType.DriverDesc -> {
+                flowOf(queried.sortedByDescending { it.driver })
+            }
+            SortType.DriverAsc -> {
+                flowOf(queried.sortedBy { it.driver })
+            }
+        }
     }
 
     override suspend fun update(item: WeighedItem): Int {
@@ -71,4 +88,23 @@ class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
     }
 }
 
-val fakeMyModels = listOf<WeighedItem>()
+val fakeMyModels = mutableListOf(
+    WeighedItem(
+        uid = 6,
+        dateTime = 1718546330712, // 16 June 2024 08:58
+        license = "B6572CCA",
+        driver = "Komang",
+        inbound = "0.3",
+        outbound = "0.7",
+        netWeight = "0.4"
+    ),
+    WeighedItem(
+        uid = 7,
+        dateTime = 1718630387798, // 17 June 2024 08:19
+        license = "B1211OOP",
+        driver = "Budi",
+        inbound = "0.2",
+        outbound = "0.7",
+        netWeight = "0.5"
+    )
+)
