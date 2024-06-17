@@ -31,6 +31,8 @@ import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
@@ -95,7 +97,9 @@ fun EditWeighedItemScreen(
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                    .semantics { contentDescription = "DriverName" }
+                ,
                 value = uiState.newDriver,
                 onValueChange = { newText ->
                     viewModel.setDriver(newText)
@@ -109,7 +113,9 @@ fun EditWeighedItemScreen(
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                    .semantics { contentDescription = "LicenseNumber" }
+                ,
                 value = uiState.newLicense,
                 onValueChange = { newText ->
                     viewModel.setLicense(newText)

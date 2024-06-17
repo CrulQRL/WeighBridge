@@ -62,7 +62,7 @@ class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
     }
 
     override suspend fun getItem(uid: Long): WeighedItem {
-        TODO("Not yet implemented")
+        return data.first { item -> item.uid == uid }
     }
 
     override fun getItems(sortType: SortType, query: String): Flow<List<WeighedItem>> {
