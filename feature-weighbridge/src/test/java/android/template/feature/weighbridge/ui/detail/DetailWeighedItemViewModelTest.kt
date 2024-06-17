@@ -9,7 +9,7 @@ import org.junit.Assert
 import org.junit.Test
 
 
-@OptIn(ExperimentalCoroutinesApi::class) // TODO: Remove when stable
+@OptIn(ExperimentalCoroutinesApi::class)
 class DetailWeighedItemViewModelTest {
 
     @Test

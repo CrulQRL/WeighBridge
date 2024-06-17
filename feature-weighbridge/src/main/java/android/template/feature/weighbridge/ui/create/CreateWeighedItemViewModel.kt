@@ -87,10 +87,10 @@ class CreateWeighedItemViewModel @Inject constructor(
                     && currentState.isValidInbound
                     && currentState.isValidOutbound
 
-            val newOutbound = if (uiState.value.newOutbound.isNotBlank())
-                uiState.value.newOutbound.replace(",", ".")
+            val newOutbound = if (currentState.newOutbound.isNotBlank())
+                currentState.newOutbound.replace(",", ".")
             else "0"
-            val newInbound = uiState.value.newInbound.replace(",", ".")
+            val newInbound = currentState.newInbound.replace(",", ".")
 
             val isValidNetWeight = if (newOutbound != "0") {
                 newOutbound.toDouble() - newInbound.toDouble() > 0.0

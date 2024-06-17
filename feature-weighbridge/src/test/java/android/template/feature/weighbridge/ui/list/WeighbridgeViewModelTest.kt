@@ -36,9 +36,9 @@ class WeighedItemViewModelTest {
     fun uiState_initialListLoaded() = runTest {
         val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
         val item = viewModel.uiState.first()
-        assertEquals(item.size, 2)
-        assertEquals(item[0].uid, 7)
-        assertEquals(item[1].uid, 6)
+        assertEquals(2, item.size)
+        assertEquals(7, item[0].uid)
+        assertEquals(6, item[1].uid)
     }
 
     @Test
@@ -46,9 +46,9 @@ class WeighedItemViewModelTest {
         val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
         viewModel.updateSortType(SortType.Oldest)
         val item = viewModel.uiState.first()
-        assertEquals(item.size, 2)
-        assertEquals(item[0].uid, 6)
-        assertEquals(item[1].uid, 7)
+        assertEquals(2, item.size)
+        assertEquals(6, item[0].uid)
+        assertEquals(7, item[1].uid)
     }
 
     @Test
@@ -56,8 +56,8 @@ class WeighedItemViewModelTest {
         val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
         viewModel.updateQuery("Ko")
         val item = viewModel.uiState.first()
-        assertEquals(item.size, 1)
-        assertEquals(item[0].uid, 6)
+        assertEquals(1, item.size)
+        assertEquals(6, item[0].uid)
     }
 
     @Test
@@ -65,7 +65,7 @@ class WeighedItemViewModelTest {
         val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
         viewModel.updateQuery("211")
         val item = viewModel.uiState.first()
-        assertEquals(item.size, 1)
-        assertEquals(item[0].uid, 7)
+        assertEquals(1, item.size)
+        assertEquals(7, item[0].uid)
     }
 }
