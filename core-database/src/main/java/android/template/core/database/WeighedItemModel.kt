@@ -45,11 +45,11 @@ data class WeighedItemModel(
 
 @Dao
 interface WeighedItemDao {
-    @Query("SELECT * FROM weighed_item_model ORDER BY uid DESC LIMIT 10")
-    fun getWeighedItems(): Flow<List<WeighedItemModel>>
-
     @Insert
     suspend fun insertWeighedItem(item: WeighedItemModel): Long
+
+    @Query("SELECT * FROM weighed_item_model ORDER BY uid DESC LIMIT 10")
+    fun getWeighedItems(): Flow<List<WeighedItemModel>>
 
     @Query("SELECT * FROM weighed_item_model where uid = :uid")
     fun getWeighedItem(uid: Long): Flow<WeighedItemModel>

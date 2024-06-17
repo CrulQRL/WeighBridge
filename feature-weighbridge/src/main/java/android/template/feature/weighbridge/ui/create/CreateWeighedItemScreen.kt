@@ -93,12 +93,12 @@ fun CreateWeighedItemScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                value = uiState.newLicense,
+                value = uiState.newDriver,
                 onValueChange = { newText ->
-                    viewModel.setLicense(newText)
+                    viewModel.setDriver(newText)
                 },
                 label = {
-                    Text(text = "License Number")
+                    Text(text = "Driver Name")
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )
@@ -107,12 +107,12 @@ fun CreateWeighedItemScreen(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
-                value = uiState.newDriver,
+                value = uiState.newLicense,
                 onValueChange = { newText ->
-                    viewModel.setDriver(newText)
+                    viewModel.setLicense(newText)
                 },
                 label = {
-                    Text(text = "Driver Name")
+                    Text(text = "License Number")
                 },
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text)
             )

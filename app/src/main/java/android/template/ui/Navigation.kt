@@ -42,10 +42,14 @@ fun MainNavigation() {
         composable(
             route = "detail/{uid}",
             arguments = listOf(navArgument("uid"){ type = NavType.LongType })
-        ) { entry ->
-            val uid = entry.arguments?.getLong("uid") ?: return@composable
+        ) {
             DetailWeighedItemScreen(navController)
         }
-        composable("edit") { EditWeighedItemScreen(navController) }
+        composable(
+            route = "edit/{uid}",
+            arguments = listOf(navArgument("uid"){ type = NavType.LongType })
+        ) {
+            EditWeighedItemScreen(navController)
+        }
     }
 }

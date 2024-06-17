@@ -98,7 +98,7 @@ fun DetailWeighedItemScreen(
                         .padding(start = 16.dp, top = 16.dp, end = 16.dp)
                         .border(2.dp, MaterialTheme.colorScheme.primary, RoundedCornerShape(8.dp))
                         .clickable {
-                            navController.navigate("edit")
+                            navController.navigate("edit/${(item as DetailWeighedItemUiState.Success).data.uid}")
                         }
                     ) {
                         Row(

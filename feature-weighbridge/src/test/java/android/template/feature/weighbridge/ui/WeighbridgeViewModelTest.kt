@@ -68,7 +68,11 @@ private class FakeWeighedItemRepository : WeighedItemRepository {
 //        data.add(0, WeighedItem())
     }
 
-    override fun getItem(uid: Long): Flow<WeighedItem> {
+    override fun getItemFlow(uid: Long): Flow<WeighedItem> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getItem(uid: Long): WeighedItem {
         TODO("Not yet implemented")
     }
 }

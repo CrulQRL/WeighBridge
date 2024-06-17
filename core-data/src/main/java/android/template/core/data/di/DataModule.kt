@@ -53,7 +53,11 @@ class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
         throw NotImplementedError()
     }
 
-    override fun getItem(uid: Long): Flow<WeighedItem> {
+    override fun getItemFlow(uid: Long): Flow<WeighedItem> {
+        TODO("Not yet implemented")
+    }
+
+    override suspend fun getItem(uid: Long): WeighedItem {
         TODO("Not yet implemented")
     }
 }

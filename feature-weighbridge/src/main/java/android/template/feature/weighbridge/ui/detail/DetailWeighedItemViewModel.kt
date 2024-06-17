@@ -22,7 +22,7 @@ class DetailWeighedItemViewModel @Inject constructor(
 ): ViewModel() {
 
     val uiState: StateFlow<DetailWeighedItemUiState> = weighedItemRepository
-        .getItem(savedStateHandle["uid"]!!)
+        .getItemFlow(savedStateHandle["uid"]!!)
         .map<WeighedItem, DetailWeighedItemUiState> { item -> DetailWeighedItemUiState.Success(item.mapUI()) }
         .catch { emit(DetailWeighedItemUiState.Error(it)) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), DetailWeighedItemUiState.Loading)
