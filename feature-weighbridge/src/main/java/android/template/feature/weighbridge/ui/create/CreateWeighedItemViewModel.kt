@@ -22,22 +22,22 @@ class CreateWeighedItemViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(CreateWeighedItemUiState())
     val uiState: StateFlow<CreateWeighedItemUiState> = _uiState.asStateFlow()
 
+    fun setDriver(newDriver: String) {
+        val formattedDriver = newDriver.filter { char -> char.isLetter() || char.isWhitespace() }.replace("\\s+".toRegex(), " ")
+
+        _uiState.update { currentState ->
+            currentState.copy(newDriver = formattedDriver)
+        }
+
+        updateIsValidForm()
+    }
+
     fun setLicense(newLicense: String) {
         if (newLicense.length > 8) return
 
         val formattedLicense = newLicense.filter { char -> char.isDigit() || char.isLetter()}
         _uiState.update { currentState ->
             currentState.copy(newLicense = formattedLicense)
-        }
-
-        updateIsValidForm()
-    }
-
-    fun setDriver(newDriver: String) {
-        val formattedDriver = newDriver.filter { char -> char.isLetter() || char.isWhitespace() }.replace("\\s+".toRegex(), " ")
-
-        _uiState.update { currentState ->
-            currentState.copy(newDriver = formattedDriver)
         }
 
         updateIsValidForm()
@@ -87,8 +87,13 @@ class CreateWeighedItemViewModel @Inject constructor(
                     && currentState.isValidInbound
                     && currentState.isValidOutbound
 
-            val isValidNetWeight = if (currentState.newOutbound.isNotBlank()) {
-                currentState.newOutbound.toDouble() - currentState.newInbound.toDouble() > 0.0
+            val newOutbound = if (uiState.value.newOutbound.isNotBlank())
+                uiState.value.newOutbound.replace(",", ".")
+            else "0"
+            val newInbound = uiState.value.newInbound.replace(",", ".")
+
+            val isValidNetWeight = if (newOutbound != "0") {
+                newOutbound.toDouble() - newInbound.toDouble() > 0.0
             } else true
 
             currentState.copy(isValidForm = isValidInput && isValidNetWeight, isValidOutbound = isValidNetWeight)
@@ -97,8 +102,13 @@ class CreateWeighedItemViewModel @Inject constructor(
 
     fun submitNewWeighedItem() {
 
-        val netWeight = if (uiState.value.newOutbound.isNotBlank())  {
-            val diff = uiState.value.newOutbound.toDouble() - uiState.value.newInbound.toDouble()
+        val newOutbound = if (uiState.value.newOutbound.isNotBlank())
+            uiState.value.newOutbound.replace(",", ".")
+        else "0"
+        val newInbound = uiState.value.newInbound.replace(",", ".")
+
+        val netWeight = if (newOutbound != "0")  {
+            val diff = newOutbound.toDouble() - newInbound.toDouble()
             BigDecimal(diff).setScale(3, RoundingMode.HALF_UP)
                 .stripTrailingZeros()
                 .toPlainString()
@@ -109,8 +119,8 @@ class CreateWeighedItemViewModel @Inject constructor(
                 dateTime = System.currentTimeMillis(),
                 license = uiState.value.newLicense,
                 driver = uiState.value.newDriver.trim(),
-                inbound = uiState.value.newInbound,
-                outbound = uiState.value.newOutbound.ifBlank { "0" },
+                inbound = newInbound,
+                outbound = newOutbound,
                 netWeight = netWeight
             )
 

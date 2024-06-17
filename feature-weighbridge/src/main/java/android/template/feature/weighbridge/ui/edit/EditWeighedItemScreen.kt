@@ -1,6 +1,6 @@
 package android.template.feature.weighbridge.ui.edit
 
-import android.template.feature.weighbridge.ui.create.CreateWeighedItemUiState
+import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -60,6 +60,11 @@ fun EditWeighedItemScreen(
         }
     }
 
+    if (uiState.isItemUpdated) {
+        Log.d("Lol", "Navigate Up")
+        navController.navigateUp()
+    }
+
     Scaffold(
         topBar = {
             TopAppBar(
@@ -92,7 +97,7 @@ fun EditWeighedItemScreen(
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 value = uiState.newDriver,
                 onValueChange = { newText ->
-//                    viewModel.setDriver(newText)
+                    viewModel.setDriver(newText)
                 },
                 label = {
                     Text(text = "Driver Name")
@@ -106,7 +111,7 @@ fun EditWeighedItemScreen(
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 value = uiState.newLicense,
                 onValueChange = { newText ->
-//                    viewModel.setLicense(newText)
+                    viewModel.setLicense(newText)
                 },
                 label = {
                     Text(text = "License Number")
@@ -120,7 +125,7 @@ fun EditWeighedItemScreen(
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 value = uiState.newInbound,
                 onValueChange = { newText ->
-//                    viewModel.setInbound(newText)
+                    viewModel.setInbound(newText)
                 },
                 isError = !uiState.isValidInbound,
                 label = {
@@ -135,7 +140,7 @@ fun EditWeighedItemScreen(
                     .padding(start = 16.dp, top = 16.dp, end = 16.dp),
                 value = uiState.newOutbound,
                 onValueChange = { newText ->
-//                    viewModel.setOutbound(newText)
+                    viewModel.setOutbound(newText)
                 },
                 isError = !uiState.isValidOutbound,
                 label = {
@@ -172,7 +177,8 @@ fun EditWeighedItemScreen(
                     Button(
                         modifier = Modifier.padding(16.dp),
                         shape = RoundedCornerShape(8.dp),
-                        onClick = {  }
+                        enabled = uiState.isValidForm,
+                        onClick = { viewModel.updateWeighedItem() }
                     ) {
                         Text(
                             modifier = Modifier.padding(vertical = 4.dp),

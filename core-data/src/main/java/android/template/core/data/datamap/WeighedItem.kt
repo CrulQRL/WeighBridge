@@ -23,3 +23,15 @@ fun WeighedItemModel.mapModel(): WeighedItem {
         netWeight = this.netWeight
     )
 }
+
+fun WeighedItem.toModel(): WeighedItemModel {
+    return WeighedItemModel(
+        uid = this.uid,
+        dateTime = this.dateTime,
+        license = this.license,
+        driver = this.driver,
+        inbound = this.inbound,
+        outbound = this.outbound,
+        netWeight = this.netWeight
+    )
+}

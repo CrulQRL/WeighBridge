@@ -18,6 +18,7 @@ package android.template.core.data
 
 import android.template.core.data.datamap.WeighedItem
 import android.template.core.data.datamap.mapModel
+import android.template.core.data.datamap.toModel
 import kotlinx.coroutines.flow.Flow
 import android.template.core.database.WeighedItemModel
 import android.template.core.database.WeighedItemDao
@@ -40,6 +41,8 @@ interface WeighedItemRepository {
     fun getItemFlow(uid: Long): Flow<WeighedItem>
 
     suspend fun getItem(uid: Long): WeighedItem
+
+    suspend fun update(item: WeighedItem): Int
 }
 
 class DefaultWeighedItemRepository @Inject constructor(
@@ -75,5 +78,9 @@ class DefaultWeighedItemRepository @Inject constructor(
 
     override suspend fun getItem(uid: Long): WeighedItem {
         return weighedItemDao.getWeighedItem(uid).first().mapModel()
+    }
+
+    override suspend fun update(item: WeighedItem): Int {
+        return weighedItemDao.updateWeighedItem(item.toModel())
     }
 }

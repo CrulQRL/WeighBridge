@@ -22,6 +22,7 @@ import androidx.room.Entity
 import androidx.room.Insert
 import androidx.room.PrimaryKey
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Entity(tableName = "weighed_item_model")
@@ -53,4 +54,7 @@ interface WeighedItemDao {
 
     @Query("SELECT * FROM weighed_item_model where uid = :uid")
     fun getWeighedItem(uid: Long): Flow<WeighedItemModel>
+
+    @Update
+    fun updateWeighedItem(item: WeighedItemModel): Int
 }

@@ -75,4 +75,8 @@ private class FakeWeighedItemRepository : WeighedItemRepository {
     override suspend fun getItem(uid: Long): WeighedItem {
         TODO("Not yet implemented")
     }
+
+    override suspend fun update(item: WeighedItem): Int {
+        TODO("Not yet implemented")
+    }
 }
