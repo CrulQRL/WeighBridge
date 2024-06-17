@@ -26,6 +26,9 @@ import android.template.core.data.WeighedItemRepository
 import android.template.core.data.datamap.SortType
 import android.template.core.data.datamap.WeighedItem
 import android.template.feature.weighbridge.ui.list.WeighedItemViewModel
+import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.flowOf
+import org.junit.Assert.assertEquals
 
 /**
  * Example local unit test, which will execute on the development machine (host).
@@ -35,21 +38,65 @@ import android.template.feature.weighbridge.ui.list.WeighedItemViewModel
 @OptIn(ExperimentalCoroutinesApi::class) // TODO: Remove when stable
 class WeighedItemViewModelTest {
     @Test
-    fun uiState_initiallyLoading() = runTest {
+    fun uiState_initialListLoaded() = runTest {
         val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
-//        assertEquals(viewModel.uiState.first(), WeighedItemUiState.Loading)
+        val item = viewModel.uiState.first()
+        assertEquals(item.size, 2)
+        assertEquals(item[0].uid, 7)
+        assertEquals(item[1].uid, 6)
     }
 
     @Test
-    fun uiState_onItemSaved_isDisplayed() = runTest {
+    fun uiState_onSortTypeUpdated() = runTest {
         val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
-//        assertEquals(viewModel.uiState.first(), WeighedItemUiState.Loading)
+        viewModel.updateSortType(SortType.Oldest)
+        val item = viewModel.uiState.first()
+        assertEquals(item.size, 2)
+        assertEquals(item[0].uid, 6)
+        assertEquals(item[1].uid, 7)
+    }
+
+    @Test
+    fun uiState_onQueryDriverUpdated() = runTest {
+        val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
+        viewModel.updateQuery("Ko")
+        val item = viewModel.uiState.first()
+        assertEquals(item.size, 1)
+        assertEquals(item[0].uid, 6)
+    }
+
+    @Test
+    fun uiState_onQueryLicenseUpdated() = runTest {
+        val viewModel = WeighedItemViewModel(FakeWeighedItemRepository())
+        viewModel.updateQuery("211")
+        val item = viewModel.uiState.first()
+        assertEquals(item.size, 1)
+        assertEquals(item[0].uid, 7)
     }
 }
 
 private class FakeWeighedItemRepository : WeighedItemRepository {
 
-    private val data = mutableListOf<WeighedItem>()
+    private val data = mutableListOf(
+        WeighedItem(
+            uid = 6,
+            dateTime = 1718546330712, // 16 June 2024 08:58
+            license = "B 6572 CCA",
+            driver = "Komang",
+            inbound = "0.3",
+            outbound = "0.7",
+            netWeight = "0.4"
+        ),
+        WeighedItem(
+            uid = 7,
+            dateTime = 1718630387798, // 17 June 2024 08:19
+            license = "B 1211 OOP",
+            driver = "Budi",
+            inbound = "0.2",
+            outbound = "0.7",
+            netWeight = "0.5"
+        )
+    )
 
     override val weighedItemModels: Flow<List<WeighedItem>>
         get() = flow { emit(data.toList()) }
@@ -75,7 +122,21 @@ private class FakeWeighedItemRepository : WeighedItemRepository {
     }
 
     override fun getItems(sortType: SortType, query: String): Flow<List<WeighedItem>> {
-        TODO("Not yet implemented")
+        val queried = data.filter { it.driver.contains(query) || it.license.contains(query) }
+        return when(sortType) {
+            SortType.Newest -> {
+                flowOf(queried.sortedByDescending { it.dateTime })
+            }
+            SortType.Oldest -> {
+                flowOf(queried.sortedBy { it.dateTime })
+            }
+            SortType.DriverDesc -> {
+                flowOf(queried.sortedByDescending { it.driver })
+            }
+            SortType.DriverAsc -> {
+                flowOf(queried.sortedBy { it.driver })
+            }
+        }
     }
 
     override suspend fun update(item: WeighedItem): Int {
