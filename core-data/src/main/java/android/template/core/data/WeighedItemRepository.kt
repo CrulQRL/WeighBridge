@@ -16,6 +16,7 @@
 
 package android.template.core.data
 
+import android.template.core.data.datamap.SortType
 import android.template.core.data.datamap.WeighedItem
 import android.template.core.data.datamap.mapModel
 import android.template.core.data.datamap.toModel
@@ -28,7 +29,6 @@ import javax.inject.Inject
 
 interface WeighedItemRepository {
     val weighedItemModels: Flow<List<WeighedItem>>
-
     suspend fun add(
         dateTime: Long,
         license: String,
@@ -41,6 +41,8 @@ interface WeighedItemRepository {
     fun getItemFlow(uid: Long): Flow<WeighedItem>
 
     suspend fun getItem(uid: Long): WeighedItem
+
+    fun getItems(sortType: SortType, query: String): Flow<List<WeighedItem>>
 
     suspend fun update(item: WeighedItem): Int
 }
@@ -72,12 +74,30 @@ class DefaultWeighedItemRepository @Inject constructor(
         )
     }
 
+
     override fun getItemFlow(uid: Long): Flow<WeighedItem> {
         return weighedItemDao.getWeighedItem(uid).map { it.mapModel() }
     }
 
     override suspend fun getItem(uid: Long): WeighedItem {
         return weighedItemDao.getWeighedItem(uid).first().mapModel()
+    }
+
+    override fun getItems(sortType: SortType, query: String): Flow<List<WeighedItem>> {
+        return when (sortType) {
+            SortType.Newest -> {
+                weighedItemDao.getSortedWeighedItemsByDateDesc(query).map { models -> models.map { it.mapModel() } }
+            }
+            SortType.Oldest -> {
+                weighedItemDao.getSortedWeighedItemsByDateAsc(query).map { models -> models.map { it.mapModel() } }
+            }
+            SortType.DriverAsc -> {
+                weighedItemDao.getSortedWeighedItemsByDriverAsc(query).map { models -> models.map { it.mapModel() } }
+            }
+            SortType.DriverDesc -> {
+                weighedItemDao.getSortedWeighedItemsByDriverDesc(query).map { models -> models.map { it.mapModel() } }
+            }
+        }
     }
 
     override suspend fun update(item: WeighedItem): Int {

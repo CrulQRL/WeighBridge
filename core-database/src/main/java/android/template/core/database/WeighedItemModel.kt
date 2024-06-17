@@ -52,8 +52,20 @@ interface WeighedItemDao {
     @Query("SELECT * FROM weighed_item_model ORDER BY uid DESC LIMIT 10")
     fun getWeighedItems(): Flow<List<WeighedItemModel>>
 
-    @Query("SELECT * FROM weighed_item_model where uid = :uid")
+    @Query("SELECT * FROM weighed_item_model WHERE uid = :uid")
     fun getWeighedItem(uid: Long): Flow<WeighedItemModel>
+
+    @Query("SELECT * FROM weighed_item_model WHERE (license LIKE '%' || :query || '%' OR driver LIKE '%' || :query || '%') ORDER BY date_time DESC")
+    fun getSortedWeighedItemsByDateDesc(query: String): Flow<List<WeighedItemModel>>
+
+    @Query("SELECT * FROM weighed_item_model WHERE (license LIKE '%' || :query || '%' OR driver LIKE '%' || :query || '%') ORDER BY date_time ASC")
+    fun getSortedWeighedItemsByDateAsc(query: String): Flow<List<WeighedItemModel>>
+
+    @Query("SELECT * FROM weighed_item_model WHERE (license LIKE '%' || :query || '%' OR driver LIKE '%' || :query || '%') ORDER BY driver ASC")
+    fun getSortedWeighedItemsByDriverAsc(query: String): Flow<List<WeighedItemModel>>
+
+    @Query("SELECT * FROM weighed_item_model WHERE (license LIKE '%' || :query || '%' OR driver LIKE '%' || :query || '%') ORDER BY driver DESC")
+    fun getSortedWeighedItemsByDriverDesc(query: String): Flow<List<WeighedItemModel>>
 
     @Update
     fun updateWeighedItem(item: WeighedItemModel): Int

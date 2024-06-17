@@ -16,6 +16,7 @@
 
 package android.template.feature.weighbridge.ui.list
 
+import android.template.core.data.datamap.SortType
 import android.template.core.ui.Grey1
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -33,6 +34,7 @@ import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
 import android.template.core.ui.MyApplicationTheme
 import android.template.feature.weighbridge.ui.list.uimodel.ListWeighedItemModel
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -40,6 +42,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -56,11 +60,13 @@ import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.delay
 
 @Composable
 fun WeighedItemListScreen(
@@ -70,8 +76,8 @@ fun WeighedItemListScreen(
 )
 {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
-    val items by produceState<WeighedItemUiState>(
-        initialValue = WeighedItemUiState.Loading,
+    val items by produceState<List<ListWeighedItemModel>>(
+        initialValue = listOf(),
         key1 = lifecycle,
         key2 = viewModel
     ) {
@@ -80,8 +86,12 @@ fun WeighedItemListScreen(
         }
     }
 
-    if (items is WeighedItemUiState.Success) {
-        WeighedItemListScreen(navController, (items as WeighedItemUiState.Success).data)
+    WeighedItemListScreen(
+        navController,
+        items,
+        { query -> viewModel.updateQuery(query) }
+    ) { sortType ->
+        viewModel.updateSortType(sortType)
     }
 }
 
@@ -90,13 +100,22 @@ fun WeighedItemListScreen(
 @Composable
 internal fun WeighedItemListScreen(
     navController: NavController,
-    listWeighedData: List<ListWeighedItemModel>
+    listWeighedData: List<ListWeighedItemModel>,
+    onQueryChange: (String) -> Unit,
+    onSortTypeSelected: (SortType) -> Unit
 ) {
     val showSortDialog = remember {
         mutableStateOf(false)
     }
     val selectedSortType = remember {
         mutableStateOf<SortType>(SortType.Newest)
+    }
+
+    val listState = rememberLazyListState()
+    LaunchedEffect(key1 = listWeighedData) {
+        Log.d("Lol", "Key keubah")
+        delay(300)
+        listState.scrollToItem(0)
     }
 
     Scaffold(
@@ -121,6 +140,7 @@ internal fun WeighedItemListScreen(
             WeighedItemSortDialog(selectedSortType.value) {
                 showSortDialog.value = false
                 selectedSortType.value = it
+                onSortTypeSelected(it)
             }
         }
 
@@ -137,16 +157,16 @@ internal fun WeighedItemListScreen(
                     .padding(horizontal = 8.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
-                SearchField(modifier = Modifier.weight(1f))
+                SearchField(modifier = Modifier.weight(1f), onQueryChange)
                 SortIcon { showSortDialog.value = true }
             }
 
-            LazyColumn {
+            LazyColumn(state = listState) {
                 items(
-                    count = listWeighedData.size,
-                    key = { index -> listWeighedData[index].uid }
-                ) {index ->
-                    WeighedItemCard(weighedItem = listWeighedData[index]) { uid ->
+                    items = listWeighedData,
+                    key =  { model -> model.uid }
+                ) {model ->
+                    WeighedItemCard(weighedItem = model) { uid ->
                         navController.navigate("detail/$uid")
                     }
                 }
@@ -156,7 +176,14 @@ internal fun WeighedItemListScreen(
 }
 
 @Composable
-internal fun SearchField(modifier: Modifier) {
+internal fun SearchField(
+    modifier: Modifier,
+    onChange: (String) -> Unit
+) {
+    val query = remember {
+        mutableStateOf("")
+    }
+
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
@@ -184,8 +211,11 @@ internal fun SearchField(modifier: Modifier) {
                 errorIndicatorColor = Color.Transparent
             ),
             placeholder = { Text(text = "Search by driver name or license") },
-            value = "",
-            onValueChange = {}
+            value = query.value,
+            onValueChange = {
+                query.value = it
+                onChange(it)
+            }
         )
     }
 }
@@ -252,7 +282,9 @@ private fun DefaultPreview() {
                     license = "B 1318 OPE",
                     driver = "Sudarso"
                 )
-            )
+            ),
+            onQueryChange = {},
+            onSortTypeSelected = {}
         )
     }
 }

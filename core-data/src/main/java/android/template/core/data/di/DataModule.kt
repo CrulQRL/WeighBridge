@@ -24,6 +24,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import android.template.core.data.WeighedItemRepository
 import android.template.core.data.DefaultWeighedItemRepository
+import android.template.core.data.datamap.SortType
 import android.template.core.data.datamap.WeighedItem
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -58,6 +59,10 @@ class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
     }
 
     override suspend fun getItem(uid: Long): WeighedItem {
+        TODO("Not yet implemented")
+    }
+
+    override fun getItems(sortType: SortType, query: String): Flow<List<WeighedItem>> {
         TODO("Not yet implemented")
     }
 

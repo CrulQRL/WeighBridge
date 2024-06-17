@@ -1,5 +1,6 @@
 package android.template.feature.weighbridge.ui.list
 
+import android.template.core.data.datamap.SortType
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,7 +22,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
-
 
 @Composable
 fun WeighedItemSortDialog(
@@ -92,13 +92,6 @@ internal fun SortSelection(
         )
     }
 
-}
-
-sealed class SortType {
-    object Newest: SortType()
-    object Oldest: SortType()
-    object DriverAsc: SortType()
-    object DriverDesc: SortType()
 }
 
 @Preview

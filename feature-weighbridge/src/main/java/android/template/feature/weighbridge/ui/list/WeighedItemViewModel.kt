@@ -17,20 +17,20 @@
 package android.template.feature.weighbridge.ui.list
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
 import android.template.core.data.WeighedItemRepository
-import android.template.core.data.datamap.WeighedItem
-import android.template.feature.weighbridge.ui.list.WeighedItemUiState.Error
-import android.template.feature.weighbridge.ui.list.WeighedItemUiState.Loading
-import android.template.feature.weighbridge.ui.list.WeighedItemUiState.Success
+import android.template.core.data.datamap.SortType
 import android.template.feature.weighbridge.ui.list.uimodel.ListWeighedItemModel
 import android.template.feature.weighbridge.ui.list.uimodel.mapUI
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.debounce
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.flatMapLatest
 import javax.inject.Inject
 
 @HiltViewModel
@@ -38,15 +38,29 @@ class WeighedItemViewModel @Inject constructor(
     weighedItemRepository: WeighedItemRepository
 ) : ViewModel() {
 
-    val uiState: StateFlow<WeighedItemUiState> = weighedItemRepository
-        .weighedItemModels.map<List<WeighedItem>, WeighedItemUiState> { Success(data = it.mapUI()) }
-        .catch { emit(Error(it)) }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), Loading)
+    private val selectedSortType = MutableStateFlow<SortType>(SortType.Newest)
+    private val query = MutableStateFlow("")
 
-}
 
-sealed interface WeighedItemUiState {
-    object Loading : WeighedItemUiState
-    data class Error(val throwable: Throwable) : WeighedItemUiState
-    data class Success(val data: List<ListWeighedItemModel>) : WeighedItemUiState
+    @OptIn(FlowPreview::class, ExperimentalCoroutinesApi::class)
+    val uiState: Flow<List<ListWeighedItemModel>> = combine(selectedSortType, query) { sort, query ->
+            Pair(sort, query)
+    }
+        .debounce(timeoutMillis = 400)
+        .distinctUntilChanged()
+        .flatMapLatest {
+            weighedItemRepository.getItems(it.first, it.second)
+        }
+        .map { items ->
+            items.mapUI()
+        }
+
+    fun updateSortType(sortType: SortType) {
+        selectedSortType.value = sortType
+    }
+
+    fun updateQuery(newQuery: String) {
+        query.value = newQuery
+    }
+
 }

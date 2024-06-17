@@ -2,7 +2,6 @@ package android.template.feature.weighbridge.ui.edit
 
 import android.template.core.data.WeighedItemRepository
 import android.template.core.data.datamap.WeighedItem
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
