@@ -22,8 +22,8 @@ fun WeighedItem.mapUI(): DetailWeighedItemModel {
         dateTime = formatter.format(this.dateTime),
         driver = this.driver,
         license = this.license,
-        inbound = this.inbound,
-        outbound = this.outbound,
-        netWeight = this.netWeight ?: "-"
+        inbound = "${this.inbound} Tons",
+        outbound = "${this.outbound} Tons",
+        netWeight = if (this.netWeight != null) "${this.netWeight} Tons"  else "-"
     )
 }

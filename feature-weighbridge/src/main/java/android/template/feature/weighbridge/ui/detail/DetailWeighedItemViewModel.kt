@@ -17,8 +17,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class DetailWeighedItemViewModel @Inject constructor(
-    private val savedStateHandle: SavedStateHandle,
-    private val weighedItemRepository: WeighedItemRepository
+    savedStateHandle: SavedStateHandle,
+    weighedItemRepository: WeighedItemRepository
 ): ViewModel() {
 
     val uiState: StateFlow<DetailWeighedItemUiState> = weighedItemRepository
