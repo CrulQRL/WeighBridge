@@ -25,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
@@ -59,8 +60,10 @@ fun CreateWeighedItemScreen(
         }
     }
 
-    if (uiState.newWeighedItemId != null) {
-        navController.navigateUp()
+    LaunchedEffect(key1 = uiState.newWeighedItemId) {
+        if (uiState.newWeighedItemId != null) {
+            navController.navigateUp()
+        }
     }
 
     Scaffold(

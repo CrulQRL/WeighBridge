@@ -1,6 +1,5 @@
 package android.template.feature.weighbridge.ui.edit
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
@@ -60,9 +60,10 @@ fun EditWeighedItemScreen(
         }
     }
 
-    if (uiState.isItemUpdated) {
-        Log.d("Lol", "Navigate Up")
-        navController.navigateUp()
+    LaunchedEffect(key1 = uiState.isItemUpdated) {
+        if (uiState.isItemUpdated) {
+            navController.navigateUp()
+        }
     }
 
     Scaffold(

@@ -1,6 +1,5 @@
 package android.template.feature.weighbridge.ui.detail
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -90,7 +89,6 @@ fun DetailWeighedItemScreen(
         if (item is DetailWeighedItemUiState.Success) {
             Column(modifier = Modifier.padding(paddingValues)) {
 
-                Log.d("Lol", "Masuk Detail")
 
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -242,8 +240,6 @@ fun DetailWeighedItemScreen(
                 }
             }
         }
-
-
     }
 }
 
