@@ -24,7 +24,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,7 +32,6 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle.State.STARTED
 import androidx.lifecycle.repeatOnLifecycle
 import android.template.core.ui.MyApplicationTheme
-import android.template.feature.weighbridge.ui.WeighedItemUI
 import android.template.feature.weighbridge.ui.list.uimodel.ListWeighedItemModel
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,6 +39,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -80,36 +79,6 @@ fun WeighedItemListScreen(
             viewModel.uiState.collect { value = it }
         }
     }
-
-    val listWeighedData = listOf(
-        WeighedItemUI(
-            id = 0,
-            dateTime = "14 Jun 2024 13:35",
-            license = "B 6572 CCA",
-            driver = "Komang",
-            inbound = "0,2",
-            outbound = "0.45",
-            netWeight = "0.25"
-        ),
-        WeighedItemUI(
-            id = 1,
-            dateTime = "15 Jun 2024 13:35",
-            license = "B 7772 DAB",
-            driver = "Budi",
-            inbound = "0,2",
-            outbound = "0.45",
-            netWeight = "0.25"
-        ),
-        WeighedItemUI(
-            id = 2,
-            dateTime = "16 Jun 2024 13:35",
-            license = "B 1318 OPE",
-            driver = "Sudarso",
-            inbound = "0,2",
-            outbound = "0.45",
-            netWeight = "0.25"
-        )
-    )
 
     if (items is WeighedItemUiState.Success) {
         WeighedItemListScreen(navController, (items as WeighedItemUiState.Success).data)
@@ -172,12 +141,16 @@ internal fun WeighedItemListScreen(
                 SortIcon { showSortDialog.value = true }
             }
 
-            listWeighedData.forEach { data ->
-                WeighedItemCard(weighedItem = data) { uid ->
-                    navController.navigate("detail/$uid")
+            LazyColumn {
+                items(
+                    count = listWeighedData.size,
+                    key = { index -> listWeighedData[index].uid }
+                ) {index ->
+                    WeighedItemCard(weighedItem = listWeighedData[index]) { uid ->
+                        navController.navigate("detail/$uid")
+                    }
                 }
             }
-
         }
     }
 }
