@@ -29,7 +29,7 @@ class CreateWeighedItemViewModel @Inject constructor(
             currentState.copy(newDriver = formattedDriver)
         }
 
-        updateIsValidForm()
+        revalidateForm()
     }
 
     fun setLicense(newLicense: String) {
@@ -40,7 +40,7 @@ class CreateWeighedItemViewModel @Inject constructor(
             currentState.copy(newLicense = formattedLicense)
         }
 
-        updateIsValidForm()
+        revalidateForm()
     }
 
     fun setInbound(newInbound: String) {
@@ -52,7 +52,7 @@ class CreateWeighedItemViewModel @Inject constructor(
             _uiState.update { currentState ->
                 currentState.copy(newInbound = newInbound, isValidInbound = inboundNum != 0.0)
             }
-            updateIsValidForm()
+            revalidateForm()
         } catch (ex: NumberFormatException) {
             _uiState.update { currentState ->
                 currentState.copy(newInbound = newInbound, isValidInbound = false, isValidForm = false)
@@ -71,7 +71,7 @@ class CreateWeighedItemViewModel @Inject constructor(
             _uiState.update { currentState ->
                 currentState.copy(newOutbound = newOutbound, isValidOutbound = true)
             }
-            updateIsValidForm()
+            revalidateForm()
         } catch (ex: NumberFormatException) {
             _uiState.update { currentState ->
                 currentState.copy(newOutbound = newOutbound, isValidOutbound = false, isValidForm = false)
@@ -79,7 +79,7 @@ class CreateWeighedItemViewModel @Inject constructor(
         }
     }
 
-    private fun updateIsValidForm() {
+    private fun revalidateForm() {
         _uiState.update { currentState ->
             val isValidInput = currentState.newLicense.isNotBlank()
                     && currentState.newDriver.isNotBlank()
@@ -96,7 +96,12 @@ class CreateWeighedItemViewModel @Inject constructor(
                 newOutbound.toDouble() - newInbound.toDouble() > 0.0
             } else true
 
-            currentState.copy(isValidForm = isValidInput && isValidNetWeight, isValidOutbound = isValidNetWeight)
+            val netWeight = if (newOutbound != "0") {
+                val diff = newOutbound.toDouble() - newInbound.toDouble()
+                if (diff > 0) diff.toString() else null
+            } else null
+
+            currentState.copy(isValidOutbound = isValidNetWeight, netWeight = netWeight, isValidForm = isValidInput && isValidNetWeight)
         }
     }
 
@@ -107,13 +112,6 @@ class CreateWeighedItemViewModel @Inject constructor(
         else "0"
         val newInbound = uiState.value.newInbound.replace(",", ".")
 
-        val netWeight = if (newOutbound != "0")  {
-            val diff = newOutbound.toDouble() - newInbound.toDouble()
-            BigDecimal(diff).setScale(3, RoundingMode.HALF_UP)
-                .stripTrailingZeros()
-                .toPlainString()
-        } else null
-
         viewModelScope.launch(Dispatchers.IO) {
             val id = weighedItemRepository.add(
                 dateTime = System.currentTimeMillis(),
@@ -121,7 +119,7 @@ class CreateWeighedItemViewModel @Inject constructor(
                 driver = uiState.value.newDriver.trim(),
                 inbound = newInbound,
                 outbound = newOutbound,
-                netWeight = netWeight
+                netWeight = uiState.value.netWeight
             )
 
             _uiState.update { currentState -> currentState.copy(newWeighedItemId = id) }
@@ -136,6 +134,7 @@ data class CreateWeighedItemUiState(
     val newOutbound: String = "",
     val isValidInbound: Boolean = true,
     val isValidOutbound: Boolean = true,
+    val netWeight: String? = null,
     val isValidForm: Boolean = false,
     val newWeighedItemId: Long? = null
 )

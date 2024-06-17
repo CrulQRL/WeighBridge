@@ -172,7 +172,7 @@ fun CreateWeighedItemScreen(
                     ) {
                         Text(text = "Net Weight", fontSize = 22.sp)
                         Spacer(modifier = Modifier.height(4.dp))
-                        Text(text = "Net Weight", fontSize = 32.sp, fontWeight = FontWeight.Bold)
+                        Text(text = uiState.netWeight ?: "-", fontSize = 32.sp, fontWeight = FontWeight.Bold)
                     }
 
                     Button(
