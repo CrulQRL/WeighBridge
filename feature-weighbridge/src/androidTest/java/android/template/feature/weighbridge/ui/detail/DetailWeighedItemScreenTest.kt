@@ -38,7 +38,7 @@ class DetailWeighedItemScreenTest {
         }
     }
     @Test
-    fun firstItem_exists() {
+    fun detailItem_exists() {
         composeTestRule.onNodeWithText("Komang").assertExists()
         composeTestRule.onNodeWithText("B6572CCA").assertExists()
         composeTestRule.onNodeWithText("16 June 2024 08:58").assertExists()
