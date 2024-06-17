@@ -98,7 +98,11 @@ class CreateWeighedItemViewModel @Inject constructor(
 
             val netWeight = if (newOutbound != "0") {
                 val diff = newOutbound.toDouble() - newInbound.toDouble()
-                if (diff > 0) diff.toString() else null
+                if (diff > 0) {
+                    BigDecimal(diff).setScale(3, RoundingMode.HALF_UP)
+                        .stripTrailingZeros()
+                        .toPlainString()
+                } else null
             } else null
 
             currentState.copy(isValidOutbound = isValidNetWeight, netWeight = netWeight, isValidForm = isValidInput && isValidNetWeight)

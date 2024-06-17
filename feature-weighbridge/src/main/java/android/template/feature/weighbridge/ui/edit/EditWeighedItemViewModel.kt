@@ -2,6 +2,7 @@ package android.template.feature.weighbridge.ui.edit
 
 import android.template.core.data.WeighedItemRepository
 import android.template.core.data.datamap.WeighedItem
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,7 +32,8 @@ class EditWeighedItemViewModel @Inject constructor(
                 val item = repository.getItem(savedStateHandle["uid"]!!)
                 currentState.copy(
                     uid = item.uid, dateTime = item.dateTime, newLicense = item.license,
-                    newDriver = item.driver, newInbound = item.inbound, newOutbound = item.outbound
+                    newDriver = item.driver, newInbound = item.inbound, newOutbound = item.outbound,
+                    netWeight = item.netWeight
                 )
             }
         }
@@ -111,7 +113,16 @@ class EditWeighedItemViewModel @Inject constructor(
                 newOutbound.toDouble() - newInbound.toDouble() > 0.0
             } else true
 
-            currentState.copy(isValidForm = isValidInput && isValidNetWeight, isValidOutbound = isValidNetWeight)
+            val netWeight = if (newOutbound != "0") {
+                val diff = newOutbound.toDouble() - newInbound.toDouble()
+                if (diff > 0) {
+                    BigDecimal(diff).setScale(3, RoundingMode.HALF_UP)
+                        .stripTrailingZeros()
+                        .toPlainString()
+                } else null
+            } else null
+
+            currentState.copy(isValidOutbound = isValidNetWeight, netWeight = netWeight, isValidForm = isValidInput && isValidNetWeight)
         }
     }
 
@@ -122,13 +133,6 @@ class EditWeighedItemViewModel @Inject constructor(
         else "0"
         val newInbound = uiState.value.newInbound.replace(",", ".")
 
-        val netWeight = if (newOutbound != "0")  {
-            val diff = newOutbound.toDouble() - newInbound.toDouble()
-            BigDecimal(diff).setScale(3, RoundingMode.HALF_UP)
-                .stripTrailingZeros()
-                .toPlainString()
-        } else null
-
         viewModelScope.launch(Dispatchers.IO) {
             val result = repository.update(
                 WeighedItem(
@@ -138,7 +142,7 @@ class EditWeighedItemViewModel @Inject constructor(
                     driver = uiState.value.newDriver.trim(),
                     inbound = newInbound,
                     outbound = newOutbound,
-                    netWeight = netWeight
+                    netWeight = uiState.value.netWeight
                 )
             )
 
@@ -159,6 +163,7 @@ data class EditWeighedItemUiState(
     val newOutbound: String = "",
     val isValidInbound: Boolean = true,
     val isValidOutbound: Boolean = true,
+    val netWeight: String? = null,
     val isValidForm: Boolean = true,
     val isItemUpdated: Boolean = false
 )
