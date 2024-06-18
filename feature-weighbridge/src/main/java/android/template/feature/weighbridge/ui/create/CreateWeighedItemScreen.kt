@@ -129,7 +129,9 @@ fun CreateWeighedItemScreen(
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                    .semantics { contentDescription = "NewInbound" }
+                ,
                 value = uiState.newInbound,
                 onValueChange = { newText ->
                     viewModel.setInbound(newText)
@@ -144,7 +146,9 @@ fun CreateWeighedItemScreen(
             OutlinedTextField(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(start = 16.dp, top = 16.dp, end = 16.dp),
+                    .padding(start = 16.dp, top = 16.dp, end = 16.dp)
+                    .semantics { contentDescription = "NewOutbound" }
+                ,
                 value = uiState.newOutbound,
                 onValueChange = { newText ->
                     viewModel.setOutbound(newText)
