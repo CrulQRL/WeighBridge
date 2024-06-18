@@ -41,7 +41,6 @@ interface DataModule {
 }
 
 class FakeWeighedItemRepository @Inject constructor() : WeighedItemRepository {
-    override val weighedItemModels: Flow<List<WeighedItem>> = flowOf(fakeMyModels)
 
     private val data = fakeMyModels
 

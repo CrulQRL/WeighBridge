@@ -19,13 +19,14 @@ package android.template.data
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import android.template.core.data.DefaultWeighedItemRepository
+import android.template.core.data.datamap.WeighedItem
 import android.template.core.database.WeighedItemModel
 import android.template.core.database.WeighedItemDao
+import kotlinx.coroutines.flow.flowOf
 
 /**
  * Unit tests for [DefaultWeighedItemRepository].
@@ -34,12 +35,76 @@ import android.template.core.database.WeighedItemDao
 class DefaultWeighedItemRepositoryTest {
 
     @Test
-    fun myModels_newItemSaved_itemIsReturned() = runTest {
+    fun weighedItem_newItemSaved() = runTest {
         val repository = DefaultWeighedItemRepository(FakeWeighedItemDao())
 
-//        repository.add("Repository")
+        val uid = repository.add(
+            dateTime = 1718546330712, // 16 June 2024 08:58
+            license = "B6572CCA",
+            driver = "Komang",
+            inbound = "0.3",
+            outbound = "0.7",
+            netWeight = "0.4"
+        )
 
-        assertEquals(repository.weighedItemModels.first().size, 1)
+        assertEquals(uid, 10L)
+        assertEquals(repository.getItem(10L).license, "B6572CCA")
+        assertEquals(repository.getItem(10L).driver, "Komang")
+        assertEquals(repository.getItem(10L).inbound, "0.3")
+        assertEquals(repository.getItem(10L).outbound, "0.7")
+        assertEquals(repository.getItem(10L).netWeight, "0.4")
+    }
+
+    @Test
+    fun weighedItem_geDetailFlow() = runTest {
+        val repository = DefaultWeighedItemRepository(FakeWeighedItemDao())
+
+        val uid = repository.add(
+            dateTime = 1718630387798, // 17 June 2024 08:19
+            license = "B1211OOP",
+            driver = "Budi",
+            inbound = "0.2",
+            outbound = "0.7",
+            netWeight = "0.5"
+        )
+
+        assertEquals(repository.getItemFlow(uid).first().license, "B1211OOP")
+        assertEquals(repository.getItemFlow(uid).first().driver, "Budi")
+        assertEquals(repository.getItemFlow(uid).first().inbound, "0.2")
+        assertEquals(repository.getItemFlow(uid).first().outbound, "0.7")
+        assertEquals(repository.getItemFlow(uid).first().netWeight, "0.5")
+    }
+
+    @Test
+    fun weighedItem_updateItem() = runTest {
+        val repository = DefaultWeighedItemRepository(FakeWeighedItemDao())
+
+        val uid = repository.add(
+            dateTime = 1718546330712, // 16 June 2024 08:58
+            license = "B6572CCA",
+            driver = "Komang",
+            inbound = "0.3",
+            outbound = "0.7",
+            netWeight = "0.4"
+        )
+
+        val newItem = WeighedItem(
+            uid = uid,
+            dateTime = 1718630387798, // 17 June 2024 08:19
+            license = "B1211OOP",
+            driver = "Budi",
+            inbound = "0.2",
+            outbound = "0.7",
+            netWeight = "0.5"
+        )
+
+        repository.update(newItem)
+
+        assertEquals(repository.getItem(uid).license, "B1211OOP")
+        assertEquals(repository.getItem(uid).driver, "Budi")
+        assertEquals(repository.getItem(uid).inbound, "0.2")
+        assertEquals(repository.getItem(uid).outbound, "0.7")
+        assertEquals(repository.getItem(uid).netWeight, "0.5")
     }
 
 }
@@ -48,16 +113,18 @@ private class FakeWeighedItemDao : WeighedItemDao {
 
     private val data = mutableListOf<WeighedItemModel>()
 
-    override fun getWeighedItems(): Flow<List<WeighedItemModel>> = flow {
-        emit(data)
+    override fun getWeighedItems(): Flow<List<WeighedItemModel>> {
+        return flowOf(data)
     }
 
     override suspend fun insertWeighedItem(item: WeighedItemModel): Long {
-        TODO("Not yet implemented")
+        val newLocalId = 10L
+        data.add(item.copy(uid = newLocalId))
+        return newLocalId
     }
 
     override fun getWeighedItem(uid: Long): Flow<WeighedItemModel> {
-        TODO("Not yet implemented")
+        return flowOf(data.first { data -> data.uid == uid })
     }
 
     override fun getSortedWeighedItemsByDateDesc(query: String): Flow<List<WeighedItemModel>> {
@@ -77,6 +144,8 @@ private class FakeWeighedItemDao : WeighedItemDao {
     }
 
     override fun updateWeighedItem(item: WeighedItemModel): Int {
-        TODO("Not yet implemented")
+        val index = data.indexOfFirst { data -> data.uid == item.uid }
+        data[index] = item
+        return 1
     }
 }

@@ -4,7 +4,6 @@ import android.template.core.data.WeighedItemRepository
 import android.template.core.data.datamap.SortType
 import android.template.core.data.datamap.WeighedItem
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOf
 
 class FakeWeighedItemRepository : WeighedItemRepository {
@@ -29,9 +28,6 @@ class FakeWeighedItemRepository : WeighedItemRepository {
             netWeight = "0.5"
         )
     )
-
-    override val weighedItemModels: Flow<List<WeighedItem>>
-        get() = flow { emit(data.toList()) }
 
     override suspend fun add(
         dateTime: Long,

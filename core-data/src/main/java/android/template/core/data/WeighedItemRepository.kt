@@ -28,7 +28,6 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 interface WeighedItemRepository {
-    val weighedItemModels: Flow<List<WeighedItem>>
     suspend fun add(
         dateTime: Long,
         license: String,
@@ -50,9 +49,6 @@ interface WeighedItemRepository {
 class DefaultWeighedItemRepository @Inject constructor(
     private val weighedItemDao: WeighedItemDao
 ) : WeighedItemRepository {
-
-    override val weighedItemModels: Flow<List<WeighedItem>> =
-        weighedItemDao.getWeighedItems().map { models -> models.map { it.mapModel() } }
 
     override suspend fun add(
         dateTime: Long,
